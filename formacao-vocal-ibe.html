@@ -1,0 +1,1148 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Formação Vocal — M.M. IBE</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green-deep: #3a4a2e;
+    --green-mid: #4e6040;
+    --green-light: #6b7c55;
+    --green-muted: #8a9872;
+    --cream: #f5f0e8;
+    --cream-dark: #ede6d6;
+    --terracotta: #b5603a;
+    --gold: #c49a4a;
+    --white: #ffffff;
+    --text-dark: #2a3520;
+    --text-mid: #4e6040;
+    --border: rgba(58,74,46,0.15);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: #2a3520;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 0 60px;
+  }
+
+  /* ── EDITOR PANEL ── */
+  .editor {
+    width: 100%;
+    max-width: 480px;
+    padding: 0 16px;
+  }
+
+  .editor-header {
+    text-align: center;
+    padding: 32px 0 24px;
+  }
+
+  .editor-logo {
+    font-family: 'Playfair Display', serif;
+    color: var(--green-muted);
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .editor-title {
+    font-family: 'Playfair Display', serif;
+    color: var(--cream);
+    font-size: 26px;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+
+  .editor-title span {
+    color: var(--green-muted);
+  }
+
+  /* Cards */
+  .card {
+    background: var(--cream);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 14px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  }
+
+  .card-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--green-muted);
+    margin-bottom: 12px;
+  }
+
+  /* Inputs */
+  input[type="text"], input[type="date"], select, textarea {
+    width: 100%;
+    background: var(--cream-dark);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--text-dark);
+    outline: none;
+    transition: border-color 0.2s;
+    appearance: none;
+  }
+
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--green-mid);
+  }
+
+  .input-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .input-group {
+    margin-bottom: 10px;
+  }
+
+  .input-group label {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--green-mid);
+    margin-bottom: 5px;
+    letter-spacing: 0.5px;
+  }
+
+  /* Tags / vocalistas */
+  .tags-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    margin-bottom: 10px;
+    min-height: 32px;
+  }
+
+  .tag {
+    background: var(--green-deep);
+    color: var(--cream);
+    font-size: 12px;
+    font-weight: 500;
+    padding: 5px 10px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .tag button {
+    background: none;
+    border: none;
+    color: var(--green-muted);
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 1;
+    padding: 0;
+  }
+
+  .tag button:hover { color: var(--cream); }
+
+  .add-row {
+    display: flex;
+    gap: 8px;
+  }
+
+  .add-row input {
+    flex: 1;
+    margin-bottom: 0;
+  }
+
+  .btn-add {
+    background: var(--green-deep);
+    color: var(--cream);
+    border: none;
+    border-radius: 10px;
+    padding: 0 16px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.2s;
+  }
+
+  .btn-add:hover { background: var(--green-mid); }
+
+  /* Músicas */
+  .musica-card {
+    background: var(--cream);
+    border-radius: 14px;
+    margin-bottom: 12px;
+    overflow: hidden;
+    box-shadow: 0 3px 14px rgba(0,0,0,0.18);
+  }
+
+  .musica-header {
+    background: var(--green-deep);
+    padding: 13px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .musica-num {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--green-muted);
+    letter-spacing: 2px;
+    flex-shrink: 0;
+  }
+
+  .musica-nome-input {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+    border-radius: 0;
+    color: var(--cream);
+    font-family: 'Playfair Display', serif;
+    font-size: 15px;
+    font-weight: 600;
+    padding: 2px 0;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .musica-nome-input:focus {
+    border-bottom-color: var(--green-muted);
+    outline: none;
+  }
+
+  .musica-nome-input::placeholder { color: rgba(245,240,232,0.4); }
+
+  .btn-remove-musica {
+    background: none;
+    border: none;
+    color: var(--green-muted);
+    cursor: pointer;
+    font-size: 18px;
+    flex-shrink: 0;
+    line-height: 1;
+  }
+
+  .btn-remove-musica:hover { color: var(--terracotta); }
+
+  .musica-meta {
+    padding: 12px 16px 0;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .badge-kit {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    padding: 3px 9px;
+    border-radius: 20px;
+  }
+
+  .badge-kit.tem { background: #d4e8c8; color: #2a5018; }
+  .badge-kit.nao { background: #f5ddd4; color: #8b3520; }
+
+  .tom-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+    min-width: 160px;
+  }
+
+  .tom-fader-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .tom-fader {
+    -webkit-appearance: none;
+    appearance: none;
+    flex: 1;
+    height: 4px;
+    border-radius: 2px;
+    background: linear-gradient(to right, var(--terracotta) 0%, var(--cream-dark) 50%, var(--green-mid) 100%);
+    outline: none;
+    cursor: pointer;
+  }
+
+  .tom-fader::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--green-deep);
+    border: 2px solid var(--cream);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+    cursor: pointer;
+  }
+
+  .tom-fader::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--green-deep);
+    border: 2px solid var(--cream);
+    cursor: pointer;
+  }
+
+  .tom-value {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--terracotta);
+    min-width: 28px;
+    text-align: center;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .tom-value.zero { color: var(--green-muted); }
+
+  .tom-label {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--green-muted);
+    text-align: right;
+  }
+
+  .musica-vozes {
+    padding: 12px 16px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .voz-row {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .voz-nome {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-dark);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .voz-select {
+    padding: 7px 12px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  .voz-obs-input {
+    margin-top: 4px;
+    font-size: 12px;
+    padding: 6px 10px;
+    color: var(--terracotta);
+  }
+
+  /* Botões principais */
+  .btn-primary {
+    width: 100%;
+    background: var(--green-deep);
+    color: var(--cream);
+    border: none;
+    border-radius: 12px;
+    padding: 14px;
+    font-family: 'Playfair Display', serif;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    margin-bottom: 10px;
+    letter-spacing: 0.3px;
+  }
+
+  .btn-primary:hover { background: var(--green-mid); }
+  .btn-primary:active { transform: scale(0.98); }
+
+  .btn-secondary {
+    width: 100%;
+    background: transparent;
+    color: var(--cream);
+    border: 1.5px solid rgba(245,240,232,0.25);
+    border-radius: 12px;
+    padding: 13px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: border-color 0.2s;
+    margin-bottom: 10px;
+  }
+
+  .btn-secondary:hover { border-color: var(--green-muted); color: var(--green-muted); }
+
+  .btn-terracotta {
+    background: var(--terracotta);
+  }
+  .btn-terracotta:hover { background: #9e4f2e; }
+
+  .actions {
+    padding: 8px 0 0;
+  }
+
+  /* ── PREVIEW CARD (mobile-sized) ── */
+  #preview-section {
+    display: none;
+    width: 100%;
+    max-width: 480px;
+    padding: 0 16px;
+    margin-top: 8px;
+  }
+
+  .preview-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--green-muted);
+    text-align: center;
+    margin-bottom: 16px;
+  }
+
+  /* THE CARD TO SCREENSHOT */
+  #formacao-card {
+    width: 100%;
+    background: var(--cream);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.35);
+    position: relative;
+  }
+
+  .card-top {
+    background: var(--green-deep);
+    padding: 28px 24px 22px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card-top::before {
+    content: '';
+    position: absolute;
+    top: -40px;
+    right: -40px;
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.04);
+  }
+
+  .card-top::after {
+    content: '';
+    position: absolute;
+    bottom: -20px;
+    left: 30%;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.03);
+  }
+
+  .card-church {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--green-muted);
+    margin-bottom: 4px;
+  }
+
+  .card-ministry {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--cream);
+    line-height: 1.1;
+    margin-bottom: 14px;
+  }
+
+  .card-ministry span {
+    color: var(--green-muted);
+    font-size: 16px;
+  }
+
+  .card-meta-row {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .card-meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .card-meta-label {
+    font-size: 8px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--green-muted);
+  }
+
+  .card-meta-value {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--cream);
+  }
+
+  .card-divider {
+    height: 3px;
+    background: linear-gradient(90deg, var(--terracotta) 0%, var(--gold) 50%, var(--green-mid) 100%);
+  }
+
+  .card-body {
+    padding: 0 0 16px;
+  }
+
+  /* Canção no card */
+  .song-block {
+    border-bottom: 1px solid var(--border);
+    padding: 14px 20px;
+  }
+
+  .song-block:last-child { border-bottom: none; }
+
+  .song-block-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    gap: 8px;
+  }
+
+  .song-index {
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--green-muted);
+    letter-spacing: 1px;
+    margin-top: 3px;
+    flex-shrink: 0;
+  }
+
+  .song-title-wrap {
+    flex: 1;
+  }
+
+  .song-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-dark);
+    line-height: 1.2;
+  }
+
+  .song-badges {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+    margin-top: 4px;
+    align-items: center;
+  }
+
+  .song-badge-nokit {
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--terracotta);
+    background: rgba(181,96,58,0.1);
+    padding: 2px 7px;
+    border-radius: 10px;
+  }
+
+  .song-badge-tom {
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--white);
+    background: var(--terracotta);
+    padding: 3px 9px;
+    border-radius: 10px;
+    letter-spacing: 0.3px;
+  }
+
+  .song-voices {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 6px;
+  }
+
+  .voice-line {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+  }
+
+  .voice-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-dark);
+    min-width: 80px;
+  }
+
+  .voice-dash {
+    color: var(--green-muted);
+    font-size: 11px;
+  }
+
+  .voice-part {
+    font-size: 13px;
+    color: var(--text-mid);
+    font-weight: 400;
+  }
+
+  .voice-obs {
+    font-size: 11px;
+    color: var(--terracotta);
+    font-style: italic;
+  }
+
+  .card-footer {
+    background: var(--green-deep);
+    padding: 12px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer-ibe {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--cream);
+    letter-spacing: -0.5px;
+  }
+
+  .footer-note {
+    font-size: 10px;
+    color: var(--green-muted);
+    text-align: right;
+    line-height: 1.4;
+  }
+
+  /* Copy text area */
+  .copy-wrap {
+    margin-top: 14px;
+  }
+
+  textarea#texto-copiavel {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    color: var(--cream-dark);
+    font-size: 12px;
+    line-height: 1.6;
+    padding: 12px;
+    resize: none;
+    width: 100%;
+    min-height: 80px;
+  }
+
+  .toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--green-deep);
+    color: var(--cream);
+    padding: 10px 22px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    transition: transform 0.3s ease;
+    z-index: 999;
+    white-space: nowrap;
+  }
+
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* Divider */
+  .section-sep {
+    border: none;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    margin: 6px 0 16px;
+  }
+
+  select option { color: #2a3520; background: #f5f0e8; }
+</style>
+</head>
+<body>
+
+<!-- ══════════════ EDITOR ══════════════ -->
+<div class="editor">
+  <div class="editor-header">
+    <div class="editor-logo">ibe · ministério de música</div>
+    <div class="editor-title">Formação <span>Vocal</span></div>
+  </div>
+
+  <!-- Cabeçalho do culto -->
+  <div class="card">
+    <div class="card-label">Culto</div>
+    <div class="input-group">
+      <label>Data</label>
+      <input type="date" id="data-culto">
+    </div>
+    <div class="input-group">
+      <label>Ministro de Louvor</label>
+      <input type="text" id="ministro" placeholder="Nome do ministro">
+    </div>
+  </div>
+
+  <!-- Vocalistas -->
+  <div class="card">
+    <div class="card-label">Vocalistas Escalados</div>
+    <div class="tags-wrap" id="tags-vocalistas"></div>
+    <div class="add-row">
+      <input type="text" id="input-vocalista" placeholder="Nome do vocalista" maxlength="30">
+      <button class="btn-add" onclick="adicionarVocalista()">+ Add</button>
+    </div>
+  </div>
+
+  <!-- Músicas -->
+  <div id="musicas-container"></div>
+
+  <button class="btn-add" style="width:100%;padding:13px;border-radius:12px;font-size:14px;margin-bottom:14px;" onclick="adicionarMusica()">
+    + Adicionar Música
+  </button>
+
+  <hr class="section-sep">
+
+  <div class="actions">
+    <button class="btn-primary" onclick="gerarPreview()">Gerar Formação</button>
+    <button class="btn-secondary" onclick="limparTudo()">↺ Recomeçar</button>
+  </div>
+</div>
+
+<!-- ══════════════ PREVIEW ══════════════ -->
+<div id="preview-section">
+  <div class="preview-label">prévia · toque para copiar</div>
+
+  <div id="formacao-card">
+    <div class="card-top">
+      <div class="card-church">Igreja Batista da Esperança</div>
+      <div class="card-ministry">Ministério<br><span>de Música</span></div>
+      <div class="card-meta-row">
+        <div class="card-meta-item">
+          <span class="card-meta-label">Data</span>
+          <span class="card-meta-value" id="prev-data">—</span>
+        </div>
+        <div class="card-meta-item">
+          <span class="card-meta-label">Ministro</span>
+          <span class="card-meta-value" id="prev-ministro">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="card-divider"></div>
+    <div class="card-body" id="prev-musicas"></div>
+    <div class="card-footer">
+      <span class="footer-ibe">ibe</span>
+      <span class="footer-note" id="prev-footer-note">Formação Vocal<br>M.M.</span>
+    </div>
+  </div>
+
+  <div class="copy-wrap">
+    <textarea id="texto-copiavel" readonly></textarea>
+  </div>
+
+  <div style="margin-top:10px;">
+    <button class="btn-primary" id="btn-salvar" onclick="salvarImagem()">📸 Copiar Imagem</button>
+    <button class="btn-primary btn-terracotta" onclick="copiarTexto()">📋 Copiar Texto</button>
+    <button class="btn-secondary" onclick="voltarEditor()">✏️ Editar Formação</button>
+  </div>
+</div>
+
+<div class="toast" id="toast">Texto copiado!</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+  // ── Repertório com kit vocal (da planilha) ──
+  const repertorioComKit = new Set([
+    "a ele a glória","agradeço","até outra vez","aclame ao senhor","espírito enche a minha vida",
+    "graça","grato sou","gratidão","jesus em tua presença","louvemos ao senhor","muitos virão te louvar",
+    "nenhum deus como tu","nunca me deixou","novo dia","poder para salvar","quão formoso és",
+    "quebrantado","rei meu","seu sangue","sublime","teu povo","tremenda graça","tu és deus - a ele",
+    "tudo é perda","vida aos sepulcros","vou te alegrar","ao único","bondade de deus","descansarei",
+    "deus forte","ele é exaltado","emaús","estrela da manha","eu me rendo","eu te bendirei",
+    "filho do deus vivo","getsêmani","nada além do sangue","o rei está voltando","poderoso deus",
+    "porque ele vive","pra sempre","quão formoso és","rei do meu coração","reina em mim",
+    "rendido estou","santo pra sempre","teu amor não falha","venha o teu reino","vim para adorar-te",
+    "até que ele venha"
+  ]);
+
+  let vocalistas = [];
+  let musicas = [];
+  let musicaCount = 0;
+
+  const VOZES = ["Lead","Soprano","Contralto","Tenor","Abertura Livre","Base"];
+
+  // ── Vocalistas ──
+  document.getElementById('input-vocalista').addEventListener('keydown', e => {
+    if (e.key === 'Enter') adicionarVocalista();
+  });
+
+  function adicionarVocalista() {
+    const input = document.getElementById('input-vocalista');
+    const nome = input.value.trim();
+    if (!nome || vocalistas.includes(nome)) { input.value = ''; return; }
+    vocalistas.push(nome);
+    input.value = '';
+    renderTags();
+    atualizarVozesNasMusicas();
+  }
+
+  function removerVocalista(nome) {
+    vocalistas = vocalistas.filter(v => v !== nome);
+    renderTags();
+    atualizarVozesNasMusicas();
+  }
+
+  function renderTags() {
+    const wrap = document.getElementById('tags-vocalistas');
+    wrap.innerHTML = vocalistas.map(v => `
+      <div class="tag">${v}<button onclick="removerVocalista('${v}')" title="Remover">×</button></div>
+    `).join('');
+  }
+
+  // ── Músicas ──
+  function adicionarMusica() {
+    musicaCount++;
+    const id = `musica-${Date.now()}`;
+    musicas.push({ id, nome: '', tom: '', vozes: {} });
+    renderMusicas();
+    setTimeout(() => {
+      const el = document.getElementById(`nome-${id}`);
+      if (el) el.focus();
+    }, 50);
+  }
+
+  function removerMusica(id) {
+    musicas = musicas.filter(m => m.id !== id);
+    renderMusicas();
+  }
+
+  function renderMusicas() {
+    const container = document.getElementById('musicas-container');
+    container.innerHTML = '';
+    musicas.forEach((m, idx) => {
+      const temKit = temKitVocal(m.nome);
+      const div = document.createElement('div');
+      div.className = 'musica-card';
+      div.id = `card-${m.id}`;
+
+      const vozRows = vocalistas.map(v => {
+        const sel = m.vozes[v] || '';
+        const obs = m.vozObs?.[v] || '';
+        const options = ['', ...VOZES].map(o =>
+          `<option value="${o}" ${sel === o ? 'selected' : ''}>${o}</option>`
+        ).join('');
+        return `
+          <div class="voz-row">
+            <div class="voz-nome">${v}</div>
+            <select class="voz-select" onchange="setVoz('${m.id}','${v}',this.value)">${options}</select>
+          </div>
+          <div style="padding-left:108px; margin-top:-4px; margin-bottom:4px;">
+            <input type="text" class="voz-obs-input" style="font-size:11px;padding:4px 10px;" placeholder="obs (ex: Milena)" value="${obs}" oninput="setVozObs('${m.id}','${v}',this.value)">
+          </div>
+        `;
+      }).join('');
+
+      const tomVal = m.tom !== undefined && m.tom !== '' ? Number(m.tom) : 0;
+      const tomLabel = tomVal === 0 ? '0' : (tomVal > 0 ? `+${tomVal}` : `${tomVal}`);
+
+      div.innerHTML = `
+        <div class="musica-header">
+          <span class="musica-num">${String(idx+1).padStart(2,'0')}</span>
+          <input type="text" class="musica-nome-input" id="nome-${m.id}" placeholder="Nome da música" value="${m.nome}"
+            oninput="setNomeMusica('${m.id}',this.value)" list="repertorio-list">
+          <button class="btn-remove-musica" onclick="removerMusica('${m.id}')">×</button>
+        </div>
+        <div class="musica-meta">
+          <span class="badge-kit ${temKit ? 'tem' : 'nao'}">${temKit ? '✓ Kit Vocal' : '✗ Sem Kit'}</span>
+          <div class="tom-wrap">
+            <div class="tom-fader-row">
+              <input type="range" class="tom-fader" min="-12" max="12" value="${tomVal}"
+                oninput="setTomFader('${m.id}', this.value, this)">
+              <span class="tom-value ${tomVal === 0 ? 'zero' : ''}" id="tom-val-${m.id}">${tomLabel}</span>
+            </div>
+            <div class="tom-label">Semitons</div>
+          </div>
+        </div>
+        <div class="musica-vozes">${vozRows}</div>
+      `;
+      container.appendChild(div);
+    });
+  }
+
+  function setNomeMusica(id, val) {
+    const m = musicas.find(x => x.id === id);
+    if (m) {
+      m.nome = val;
+      // atualiza badge kit sem re-render completo
+      const badge = document.querySelector(`#card-${id} .badge-kit`);
+      if (badge) {
+        const t = temKitVocal(val);
+        badge.className = `badge-kit ${t ? 'tem' : 'nao'}`;
+        badge.textContent = t ? '✓ Kit Vocal' : '✗ Sem Kit';
+      }
+    }
+  }
+
+  function setTomFader(id, val, el) {
+    const m = musicas.find(x => x.id === id);
+    const n = Number(val);
+    if (m) m.tom = n;
+    const label = document.getElementById(`tom-val-${id}`);
+    if (label) {
+      label.textContent = n === 0 ? '0' : (n > 0 ? `+${n}` : `${n}`);
+      label.className = `tom-value ${n === 0 ? 'zero' : ''}`;
+    }
+  }
+
+  function setVoz(id, vocalista, voz) {
+    const m = musicas.find(x => x.id === id);
+    if (m) { if (!m.vozes) m.vozes = {}; m.vozes[vocalista] = voz; }
+  }
+
+  function setVozObs(id, vocalista, obs) {
+    const m = musicas.find(x => x.id === id);
+    if (m) { if (!m.vozObs) m.vozObs = {}; m.vozObs[vocalista] = obs; }
+  }
+
+  function atualizarVozesNasMusicas() {
+    // sync vozes obj
+    musicas.forEach(m => {
+      if (!m.vozes) m.vozes = {};
+      if (!m.vozObs) m.vozObs = {};
+    });
+    renderMusicas();
+  }
+
+  function temKitVocal(nome) {
+    return repertorioComKit.has((nome || '').toLowerCase().trim());
+  }
+
+  // ── Gerar Preview ──
+  function gerarPreview() {
+    // Sync nomes dos inputs antes de gerar (tom já sincronizado via setTomFader)
+    musicas.forEach(m => {
+      const nomeEl = document.getElementById(`nome-${m.id}`);
+      if (nomeEl) m.nome = nomeEl.value;
+      // sync fader value too
+      const faderEl = document.querySelector(`#card-${m.id} .tom-fader`);
+      if (faderEl) m.tom = Number(faderEl.value);
+    });
+
+    const data = document.getElementById('data-culto').value;
+    const ministro = document.getElementById('ministro').value;
+
+    // Format date
+    let dataFmt = '—';
+    if (data) {
+      const d = new Date(data + 'T00:00:00');
+      dataFmt = d.toLocaleDateString('pt-BR', { day:'2-digit', month:'2-digit', year:'numeric' });
+    }
+
+    document.getElementById('prev-data').textContent = dataFmt;
+    document.getElementById('prev-ministro').textContent = ministro || '—';
+    document.getElementById('prev-footer-note').innerHTML = `Formação Vocal<br>M.M.`;
+
+    // Músicas
+    const bodyEl = document.getElementById('prev-musicas');
+    bodyEl.innerHTML = '';
+
+    musicas.forEach((m, idx) => {
+      if (!m.nome.trim()) return;
+      const temKit = temKitVocal(m.nome);
+      const div = document.createElement('div');
+      div.className = 'song-block';
+
+      const badges = [];
+      if (!temKit) badges.push(`<span class="song-badge-nokit">sem kit</span>`);
+      const tomN = Number(m.tom);
+      if (tomN !== 0) {
+        const tomStr = tomN > 0 ? `+${tomN}` : `${tomN}`;
+        badges.push(`<span class="song-badge-tom">${tomStr} st</span>`);
+      }
+
+      const vozeLines = vocalistas.map(v => {
+        const parte = m.vozes[v] || '';
+        const obs = m.vozObs?.[v] || '';
+        if (!parte) return '';
+        const obsHtml = obs ? ` <span class="voice-obs">(${obs})</span>` : '';
+        return `<div class="voice-line">
+          <span class="voice-name">${v}</span>
+          <span class="voice-dash">—</span>
+          <span class="voice-part">${parte}</span>${obsHtml}
+        </div>`;
+      }).filter(Boolean).join('');
+
+      div.innerHTML = `
+        <div class="song-block-header">
+          <span class="song-index">${String(idx+1).padStart(2,'0')}</span>
+          <div class="song-title-wrap">
+            <div class="song-title">${m.nome}</div>
+            ${badges.length ? `<div class="song-badges">${badges.join('')}</div>` : ''}
+          </div>
+        </div>
+        <div class="song-voices">${vozeLines}</div>
+      `;
+      bodyEl.appendChild(div);
+    });
+
+    // Texto copiável
+    gerarTexto(dataFmt, ministro);
+
+    document.querySelector('.editor').style.display = 'none';
+    document.getElementById('preview-section').style.display = 'block';
+    window.scrollTo(0, 0);
+  }
+
+  function gerarTexto(data, ministro) {
+    let txt = `🎵 *FORMAÇÃO VOCAL — M.M. IBE*\n`;
+    txt += `📅 ${data}  👤 ${ministro || '—'}\n`;
+    txt += `${'─'.repeat(28)}\n\n`;
+
+    musicas.forEach((m, idx) => {
+      if (!m.nome.trim()) return;
+      const temKit = temKitVocal(m.nome);
+      const tomN = Number(m.tom);
+      txt += `*${String(idx+1).padStart(2,'0')}. ${m.nome}*`;
+      if (!temKit) txt += ` _(sem kit)_`;
+      if (tomN !== 0) txt += `\n⚠️ *${tomN > 0 ? '+' : ''}${tomN} semitons*`;
+      txt += '\n';
+      vocalistas.forEach(v => {
+        const parte = m.vozes[v] || '';
+        const obs = m.vozObs?.[v] || '';
+        if (parte) txt += `  ${v} — ${parte}${obs ? ` (${obs})` : ''}\n`;
+      });
+      txt += '\n';
+    });
+
+    document.getElementById('texto-copiavel').value = txt.trim();
+  }
+
+  function voltarEditor() {
+    document.querySelector('.editor').style.display = 'block';
+    document.getElementById('preview-section').style.display = 'none';
+  }
+
+  function copiarTexto() {
+    const el = document.getElementById('texto-copiavel');
+    el.select();
+    el.setSelectionRange(0, 99999);
+    navigator.clipboard.writeText(el.value).then(() => showToast('Texto copiado!')).catch(() => {
+      document.execCommand('copy');
+      showToast('Texto copiado!');
+    });
+  }
+
+  function salvarImagem() {
+    const btn = document.getElementById('btn-salvar');
+    btn.textContent = '⏳ Gerando...';
+    btn.disabled = true;
+
+    const card = document.getElementById('formacao-card');
+    html2canvas(card, {
+      scale: 2,
+      useCORS: true,
+      backgroundColor: null,
+      logging: false
+    }).then(canvas => {
+      canvas.toBlob(blob => {
+        // Tenta copiar para área de transferência
+        if (navigator.clipboard && typeof ClipboardItem !== 'undefined') {
+          const item = new ClipboardItem({ 'image/png': blob });
+          navigator.clipboard.write([item]).then(() => {
+            btn.textContent = '📸 Copiar Imagem';
+            btn.disabled = false;
+            showToast('Imagem copiada!');
+          }).catch(() => {
+            // Fallback: download
+            baixarImagem(canvas);
+            btn.textContent = '📸 Copiar Imagem';
+            btn.disabled = false;
+          });
+        } else {
+          // Clipboard API não disponível: download direto
+          baixarImagem(canvas);
+          btn.textContent = '📸 Copiar Imagem';
+          btn.disabled = false;
+        }
+      }, 'image/png');
+    }).catch(() => {
+      btn.textContent = '📸 Copiar Imagem';
+      btn.disabled = false;
+      showToast('Erro ao gerar imagem');
+    });
+  }
+
+  function baixarImagem(canvas) {
+    const link = document.createElement('a');
+    const data = document.getElementById('prev-data').textContent.replace(/\//g, '-');
+    link.download = `formacao-vocal-${data}.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+    showToast('Imagem baixada (clipboard indisponível)');
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2200);
+  }
+
+  function limparTudo() {
+    if (!confirm('Limpar toda a formação?')) return;
+    vocalistas = [];
+    musicas = [];
+    musicaCount = 0;
+    document.getElementById('data-culto').value = '';
+    document.getElementById('ministro').value = '';
+    renderTags();
+    renderMusicas();
+  }
+
+  // Datalist para autocomplete
+  const dl = document.createElement('datalist');
+  dl.id = 'repertorio-list';
+  const todasMusicas = ["A Ele A Glória","Agradeço","Até o fim","Até outra vez","Ao único","Aclame ao Senhor","Amo o Senhor","Basta uma palavra","Bom Perfume","Da vida o melhor","Eu te vejo em Tudo","É o teu povo","Espírito Enche A Minha Vida","Graça","Grato Sou","Gratidão","Grande é o nosso Deus","Hosana","Jesus em Tua Presença","Jesus o Plano Perfeito","Louvemos Ao Senhor","Muitos Virão Te Louvar","Meu tributo","Nenhum Deus Como Tu","Nunca Me Deixou","Nenhuma condenação há","Novo dia","O amor de Deus (logo eu)","Poder Para Salvar","Quão Formoso És","Que Segurança","Quebrantado","Rei Meu","Reina","Seu Sangue","Sou feliz","Sublime","Toma o teu lugar","Tão Profundo","Teu Povo","Tremenda Graça","Tu És Deus - A Ele","Tudo é Perda","Vida Aos Sepulcros","Vou Te Alegrar","Vinho e Pão","Vencendo vem Jesus/Sê valente","Bondade De Deus","Deus Forte","Ele é Exaltado","Emaús","Eu Me Rendo","Filho do Deus Vivo","Getsêmani","Nada Além do Sangue","O Rei Está Voltando","Porque Ele Vive","Pra Sempre","Rei Do Meu Coração","Reina em Mim","Rendido Estou","Teu Amor Não Falha","Venha o Teu Reino","Vim Para Adorar-te","Até que Ele venha"];
+  todasMusicas.forEach(n => {
+    const opt = document.createElement('option');
+    opt.value = n;
+    dl.appendChild(opt);
+  });
+  document.body.appendChild(dl);
+</script>
+</body>
+</html>
