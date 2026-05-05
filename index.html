@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,45 +9,92 @@
   :root {
     --green-deep: #3a4a2e;
     --green-mid: #4e6040;
-    --green-light: #6b7c55;
     --green-muted: #8a9872;
     --cream: #f5f0e8;
     --cream-dark: #ede6d6;
     --terracotta: #b5603a;
     --gold: #c49a4a;
-    --white: #ffffff;
     --text-dark: #2a3520;
     --text-mid: #4e6040;
     --border: rgba(58,74,46,0.15);
+  }
+
+  /* ── DARK MODE: fundo verde paleta IBE + cards marrom terroso ── */
+  [data-theme="dark"] {
+    --bg: #2a3520;
+    --card-bg: #272018;
+    --card-input: #1f1a12;
+    --editor-text: #e8ddc8;
+    --editor-label: #8a7a5a;
+    --sep: rgba(232,221,200,0.07);
+    --btn-sec-border: rgba(232,221,200,0.18);
+    --btn-sec-text: #e8ddc8;
+    --textarea-bg: rgba(0,0,0,0.25);
+    --textarea-border: rgba(232,221,200,0.08);
+    --textarea-text: #c8b898;
+    --input-text: #e8ddc8;
+    --label-text: #8a7a5a;
+    --voz-nome-color: #c8b898;
+    --card-label-color: #6a5a3a;
+  }
+
+  /* ── LIGHT MODE: cream original ── */
+  [data-theme="light"] {
+    --bg: #2a3520;
+    --card-bg: #f5f0e8;
+    --card-input: #ede6d6;
+    --editor-text: #f5f0e8;
+    --editor-label: #8a9872;
+    --sep: rgba(255,255,255,0.08);
+    --btn-sec-border: rgba(245,240,232,0.25);
+    --btn-sec-text: #f5f0e8;
+    --textarea-bg: rgba(255,255,255,0.06);
+    --textarea-border: rgba(255,255,255,0.1);
+    --textarea-text: #ede6d6;
+    --input-text: #2a3520;
+    --label-text: #4e6040;
+    --voz-nome-color: #2a3520;
+    --card-label-color: #8a9872;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
     font-family: 'DM Sans', sans-serif;
-    background: #2a3520;
+    background: var(--bg);
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 20px 0 60px;
+    transition: background 0.3s;
   }
 
-  /* ── EDITOR PANEL ── */
-  .editor {
-    width: 100%;
-    max-width: 480px;
-    padding: 0 16px;
+  /* ── THEME TOGGLE ── */
+  .theme-toggle {
+    position: fixed;
+    top: 14px;
+    right: 14px;
+    z-index: 100;
+    background: var(--green-deep);
+    border: none;
+    border-radius: 20px;
+    padding: 6px 11px;
+    font-size: 15px;
+    cursor: pointer;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.25);
+    transition: background 0.2s;
   }
+  .theme-toggle:hover { background: var(--green-mid); }
 
-  .editor-header {
-    text-align: center;
-    padding: 32px 0 24px;
-  }
+  /* ── EDITOR ── */
+  .editor { width: 100%; max-width: 480px; padding: 0 16px; }
+
+  .editor-header { text-align: center; padding: 32px 0 24px; }
 
   .editor-logo {
     font-family: 'Playfair Display', serif;
-    color: var(--green-muted);
+    color: var(--editor-label);
     font-size: 11px;
     letter-spacing: 4px;
     text-transform: uppercase;
@@ -56,19 +103,15 @@
 
   .editor-title {
     font-family: 'Playfair Display', serif;
-    color: var(--cream);
+    color: var(--editor-text);
     font-size: 26px;
     font-weight: 600;
     line-height: 1.2;
   }
+  .editor-title span { color: var(--editor-label); }
 
-  .editor-title span {
-    color: var(--green-muted);
-  }
-
-  /* Cards */
   .card {
-    background: var(--cream);
+    background: var(--card-bg);
     border-radius: 16px;
     padding: 20px;
     margin-bottom: 14px;
@@ -80,58 +123,36 @@
     font-weight: 600;
     letter-spacing: 3px;
     text-transform: uppercase;
-    color: var(--green-muted);
+    color: var(--editor-label);
     margin-bottom: 12px;
   }
 
-  /* Inputs */
   input[type="text"], input[type="date"], select, textarea {
     width: 100%;
-    background: var(--cream-dark);
-    border: 1.5px solid var(--border);
+    background: var(--card-input);
+    border: 1.5px solid rgba(138,152,114,0.2);
     border-radius: 10px;
     padding: 10px 14px;
     font-family: 'DM Sans', sans-serif;
     font-size: 14px;
-    color: var(--text-dark);
+    color: var(--input-text, var(--text-dark));
     outline: none;
     transition: border-color 0.2s;
     appearance: none;
   }
+  input:focus, select:focus, textarea:focus { border-color: var(--green-mid); }
 
-  input:focus, select:focus, textarea:focus {
-    border-color: var(--green-mid);
-  }
-
-  .input-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-bottom: 10px;
-  }
-
-  .input-group {
-    margin-bottom: 10px;
-  }
-
+  .input-group { margin-bottom: 10px; }
   .input-group label {
     display: block;
     font-size: 11px;
     font-weight: 600;
-    color: var(--green-mid);
+    color: var(--editor-label);
     margin-bottom: 5px;
     letter-spacing: 0.5px;
   }
 
-  /* Tags / vocalistas */
-  .tags-wrap {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 7px;
-    margin-bottom: 10px;
-    min-height: 32px;
-  }
-
+  .tags-wrap { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 10px; min-height: 32px; }
   .tag {
     background: var(--green-deep);
     color: var(--cream);
@@ -143,28 +164,11 @@
     align-items: center;
     gap: 6px;
   }
-
-  .tag button {
-    background: none;
-    border: none;
-    color: var(--green-muted);
-    cursor: pointer;
-    font-size: 14px;
-    line-height: 1;
-    padding: 0;
-  }
-
+  .tag button { background: none; border: none; color: var(--green-muted); cursor: pointer; font-size: 14px; line-height: 1; padding: 0; }
   .tag button:hover { color: var(--cream); }
 
-  .add-row {
-    display: flex;
-    gap: 8px;
-  }
-
-  .add-row input {
-    flex: 1;
-    margin-bottom: 0;
-  }
+  .add-row { display: flex; gap: 8px; }
+  .add-row input { flex: 1; margin-bottom: 0; }
 
   .btn-add {
     background: var(--green-deep);
@@ -179,17 +183,19 @@
     white-space: nowrap;
     transition: background 0.2s;
   }
-
   .btn-add:hover { background: var(--green-mid); }
 
-  /* Músicas */
+  /* ── MÚSICAS ── */
   .musica-card {
-    background: var(--cream);
+    background: var(--card-bg);
     border-radius: 14px;
     margin-bottom: 12px;
     overflow: hidden;
     box-shadow: 0 3px 14px rgba(0,0,0,0.18);
+    transition: opacity 0.2s, box-shadow 0.2s;
   }
+  .musica-card.dragging { opacity: 0.4; }
+  .musica-card.drag-over { box-shadow: 0 0 0 2.5px var(--green-mid); }
 
   .musica-header {
     background: var(--green-deep);
@@ -198,15 +204,25 @@
     justify-content: space-between;
     align-items: center;
     gap: 8px;
+    /* Não arrastar pelo header inteiro */
+    cursor: default;
   }
 
-  .musica-num {
-    font-size: 10px;
-    font-weight: 600;
+  .drag-handle {
     color: var(--green-muted);
-    letter-spacing: 2px;
+    font-size: 18px;
     flex-shrink: 0;
+    cursor: grab;
+    user-select: none;
+    padding: 2px 4px;
+    line-height: 1;
+    border-radius: 4px;
+    transition: color 0.2s;
   }
+  .drag-handle:hover { color: var(--cream); }
+  .drag-handle:active { cursor: grabbing; }
+
+  .musica-num { font-size: 10px; font-weight: 600; color: var(--green-muted); letter-spacing: 2px; flex-shrink: 0; }
 
   .musica-nome-input {
     background: transparent;
@@ -220,64 +236,22 @@
     padding: 2px 0;
     flex: 1;
     min-width: 0;
+    cursor: text;
   }
-
-  .musica-nome-input:focus {
-    border-bottom-color: var(--green-muted);
-    outline: none;
-  }
-
+  .musica-nome-input:focus { border-bottom-color: var(--green-muted); outline: none; }
   .musica-nome-input::placeholder { color: rgba(245,240,232,0.4); }
 
-  .btn-remove-musica {
-    background: none;
-    border: none;
-    color: var(--green-muted);
-    cursor: pointer;
-    font-size: 18px;
-    flex-shrink: 0;
-    line-height: 1;
-  }
-
+  .btn-remove-musica { background: none; border: none; color: var(--green-muted); cursor: pointer; font-size: 18px; flex-shrink: 0; line-height: 1; }
   .btn-remove-musica:hover { color: var(--terracotta); }
 
-  .musica-meta {
-    padding: 12px 16px 0;
-    display: flex;
-    gap: 8px;
-    align-items: center;
-    flex-wrap: wrap;
-  }
+  .musica-meta { padding: 12px 16px 0; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 
-  .badge-kit {
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 1px;
-    padding: 3px 9px;
-    border-radius: 20px;
-  }
-
+  .badge-kit { font-size: 10px; font-weight: 600; letter-spacing: 1px; padding: 3px 9px; border-radius: 20px; }
   .badge-kit.tem { background: #d4e8c8; color: #2a5018; }
   .badge-kit.nao { background: #f5ddd4; color: #8b3520; }
 
-  .tom-wrap {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    flex: 1;
-    min-width: 160px;
-  }
-
-  .tom-wrap.zero {
-    opacity: 0.3;
-    transition: opacity 0.2s ease;
-  }
-
-  .tom-fader-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
+  .tom-wrap { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 160px; }
+  .tom-fader-row { display: flex; align-items: center; gap: 8px; }
 
   .tom-fader {
     -webkit-appearance: none;
@@ -285,91 +259,35 @@
     flex: 1;
     height: 4px;
     border-radius: 2px;
-    background: linear-gradient(to right, var(--terracotta) 0%, var(--cream-dark) 50%, var(--green-mid) 100%);
+    background: linear-gradient(to right, var(--terracotta) 0%, var(--card-input) 50%, var(--green-mid) 100%);
     outline: none;
     cursor: pointer;
   }
+  .tom-fader::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%; background: var(--green-deep); border: 2px solid var(--cream); box-shadow: 0 1px 4px rgba(0,0,0,0.3); cursor: pointer; }
+  .tom-fader::-moz-range-thumb { width: 16px; height: 16px; border-radius: 50%; background: var(--green-deep); border: 2px solid var(--cream); cursor: pointer; }
 
-  .tom-fader::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    background: var(--green-deep);
-    border: 2px solid var(--cream);
-    box-shadow: 0 1px 4px rgba(0,0,0,0.3);
-    cursor: pointer;
-  }
-
-  .tom-fader::-moz-range-thumb {
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    background: var(--green-deep);
-    border: 2px solid var(--cream);
-    cursor: pointer;
-  }
-
+  /* LARGURA FIXA resolve o flickering ao cruzar o 0 */
   .tom-value {
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 700;
     color: var(--terracotta);
-    min-width: 90px;
     width: 90px;
+    min-width: 90px;
     text-align: center;
     font-family: 'DM Sans', sans-serif;
     white-space: nowrap;
     flex-shrink: 0;
   }
+  .tom-value.zero { color: var(--green-muted); font-weight: 400; }
+  .tom-label { font-size: 9px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--green-muted); text-align: right; }
 
-  .tom-value.zero { color: var(--green-muted); }
+  .musica-vozes { padding: 12px 16px 14px; display: flex; flex-direction: column; gap: 8px; }
+  .voz-row { display: grid; grid-template-columns: 100px 1fr; gap: 8px; align-items: center; }
+  .voz-nome { font-size: 13px; font-weight: 600; color: var(--input-text, var(--text-dark)); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .voz-select { padding: 7px 12px; font-size: 12px; font-weight: 500; }
+  .voz-obs-input { margin-top: 4px; font-size: 12px; padding: 6px 10px; color: var(--terracotta); }
 
-  .tom-label {
-    font-size: 9px;
-    font-weight: 600;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: var(--green-muted);
-    text-align: right;
-  }
-
-  .musica-vozes {
-    padding: 12px 16px 14px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .voz-row {
-    display: grid;
-    grid-template-columns: 100px 1fr;
-    gap: 8px;
-    align-items: center;
-  }
-
-  .voz-nome {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text-dark);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .voz-select {
-    padding: 7px 12px;
-    font-size: 12px;
-    font-weight: 500;
-  }
-
-  .voz-obs-input {
-    margin-top: 4px;
-    font-size: 12px;
-    padding: 6px 10px;
-    color: var(--terracotta);
-  }
-
-  /* Botões principais */
+  /* ── BOTÕES ── */
   .btn-primary {
     width: 100%;
     background: var(--green-deep);
@@ -385,15 +303,16 @@
     margin-bottom: 10px;
     letter-spacing: 0.3px;
   }
-
   .btn-primary:hover { background: var(--green-mid); }
   .btn-primary:active { transform: scale(0.98); }
+  .btn-terracotta { background: var(--terracotta); }
+  .btn-terracotta:hover { background: #9e4f2e; }
 
   .btn-secondary {
     width: 100%;
     background: transparent;
-    color: var(--cream);
-    border: 1.5px solid rgba(245,240,232,0.25);
+    color: var(--btn-sec-text);
+    border: 1.5px solid var(--btn-sec-border);
     border-radius: 12px;
     padding: 13px;
     font-family: 'DM Sans', sans-serif;
@@ -403,45 +322,44 @@
     transition: border-color 0.2s;
     margin-bottom: 10px;
   }
-
   .btn-secondary:hover { border-color: var(--green-muted); color: var(--green-muted); }
 
-  .btn-terracotta {
-    background: var(--terracotta);
-  }
-  .btn-terracotta:hover { background: #9e4f2e; }
+  .actions { padding: 8px 0 0; }
 
-  .actions {
-    padding: 8px 0 0;
+  /* ── AUTO-SAVE INDICATOR ── */
+  .save-indicator {
+    text-align: center;
+    font-size: 11px;
+    color: var(--green-muted);
+    opacity: 0;
+    transition: opacity 0.4s;
+    margin-bottom: 8px;
+    letter-spacing: 0.3px;
+    height: 16px;
   }
+  .save-indicator.show { opacity: 1; }
 
-  /* ── PREVIEW CARD (mobile-sized) ── */
-  #preview-section {
-    display: none;
-    width: 100%;
-    max-width: 480px;
-    padding: 0 16px;
-    margin-top: 8px;
-  }
+  .section-sep { border: none; border-top: 1px solid var(--sep); margin: 6px 0 16px; }
+
+  /* ── PREVIEW ── */
+  #preview-section { display: none; width: 100%; max-width: 480px; padding: 0 16px; margin-top: 8px; }
 
   .preview-label {
     font-size: 10px;
     font-weight: 600;
     letter-spacing: 3px;
     text-transform: uppercase;
-    color: var(--green-muted);
+    color: var(--editor-label);
     text-align: center;
     margin-bottom: 16px;
   }
 
-  /* THE CARD TO SCREENSHOT */
   #formacao-card {
     width: 100%;
     background: var(--cream);
     border-radius: 20px;
     overflow: hidden;
     box-shadow: 0 8px 40px rgba(0,0,0,0.35);
-    position: relative;
   }
 
   .card-top {
@@ -450,270 +368,70 @@
     position: relative;
     overflow: hidden;
   }
+  .card-top::before { content: ''; position: absolute; top: -40px; right: -40px; width: 160px; height: 160px; border-radius: 50%; background: rgba(255,255,255,0.04); }
+  .card-top::after { content: ''; position: absolute; bottom: -20px; left: 30%; width: 100px; height: 100px; border-radius: 50%; background: rgba(255,255,255,0.03); }
 
-  .card-top::before {
-    content: '';
-    position: absolute;
-    top: -40px;
-    right: -40px;
-    width: 160px;
-    height: 160px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.04);
-  }
+  .card-church { font-size: 9px; font-weight: 600; letter-spacing: 4px; text-transform: uppercase; color: var(--green-muted); margin-bottom: 4px; }
+  .card-ministry { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--cream); line-height: 1.1; margin-bottom: 14px; }
+  .card-ministry span { color: var(--green-muted); font-size: 16px; }
 
-  .card-top::after {
-    content: '';
-    position: absolute;
-    bottom: -20px;
-    left: 30%;
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.03);
-  }
+  .card-meta-row { display: flex; gap: 16px; flex-wrap: wrap; }
+  .card-meta-item { display: flex; flex-direction: column; gap: 2px; }
+  .card-meta-label { font-size: 8px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--green-muted); }
+  .card-meta-value { font-size: 13px; font-weight: 500; color: var(--cream); }
 
-  .card-church {
-    font-size: 9px;
-    font-weight: 600;
-    letter-spacing: 4px;
-    text-transform: uppercase;
-    color: var(--green-muted);
-    margin-bottom: 4px;
-  }
+  .card-divider { height: 3px; background: linear-gradient(90deg, var(--terracotta) 0%, var(--gold) 50%, var(--green-mid) 100%); }
 
-  .card-ministry {
-    font-family: 'Playfair Display', serif;
-    font-size: 22px;
-    font-weight: 700;
-    color: var(--cream);
-    line-height: 1.1;
-    margin-bottom: 14px;
-  }
+  .card-body { padding: 0 0 4px; }
 
-  .card-ministry span {
-    color: var(--green-muted);
-    font-size: 16px;
-  }
-
-  .card-meta-row {
-    display: flex;
-    gap: 16px;
-    flex-wrap: wrap;
-  }
-
-  .card-meta-item {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-
-  .card-meta-label {
-    font-size: 8px;
-    font-weight: 600;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--green-muted);
-  }
-
-  .card-meta-value {
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--cream);
-  }
-
-  .card-divider {
-    height: 3px;
-    background: linear-gradient(90deg, var(--terracotta) 0%, var(--gold) 50%, var(--green-mid) 100%);
-  }
-
-  .card-body {
-    padding: 0 0 16px;
-  }
-
-  /* Canção no card */
-  .song-block {
-    border-bottom: 1px solid var(--border);
-    padding: 14px 20px;
-  }
-
+  .song-block { border-bottom: 1px solid var(--border); padding: 14px 20px; }
   .song-block:last-child { border-bottom: none; }
 
-  .song-block-header {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    margin-bottom: 8px;
-    gap: 8px;
-  }
+  .song-block-header { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 8px; }
+  .song-index { font-size: 9px; font-weight: 700; color: var(--green-muted); letter-spacing: 1px; margin-top: 3px; flex-shrink: 0; }
+  .song-title-wrap { flex: 1; }
+  .song-title { font-family: 'Playfair Display', serif; font-size: 15px; font-weight: 600; color: var(--text-dark); line-height: 1.2; }
+  .song-badges { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 4px; align-items: center; }
+  .song-badge-nokit { font-size: 8px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--terracotta); background: rgba(181,96,58,0.1); padding: 2px 7px; border-radius: 10px; }
+  .song-badge-tom { font-size: 9px; font-weight: 700; color: #fff; background: var(--terracotta); padding: 3px 9px; border-radius: 10px; }
+  .song-badge-original { font-size: 9px; font-weight: 500; color: var(--green-muted); background: rgba(138,152,114,0.12); padding: 3px 9px; border-radius: 10px; }
 
-  .song-index {
-    font-size: 9px;
-    font-weight: 700;
-    color: var(--green-muted);
-    letter-spacing: 1px;
-    margin-top: 3px;
-    flex-shrink: 0;
-  }
+  .song-voices { display: flex; flex-direction: column; gap: 4px; margin-top: 6px; }
+  .voice-line { display: flex; align-items: baseline; gap: 6px; }
+  .voice-name { font-size: 13px; font-weight: 600; color: var(--text-dark); min-width: 80px; }
+  .voice-dash { color: var(--green-muted); font-size: 11px; }
+  .voice-part { font-size: 13px; color: var(--text-mid); font-weight: 400; }
+  .voice-obs { font-size: 11px; color: var(--terracotta); font-style: italic; }
 
-  .song-title-wrap {
-    flex: 1;
-  }
+  /* Observação geral no card */
+  .card-obs-geral { padding: 12px 20px 14px; border-top: 1px solid var(--border); }
+  .card-obs-label { font-size: 8px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--green-muted); margin-bottom: 4px; }
+  .card-obs-text { font-size: 12px; color: var(--text-mid); font-style: italic; line-height: 1.5; }
 
-  .song-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--text-dark);
-    line-height: 1.2;
-  }
+  .card-footer { background: var(--green-deep); padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; }
+  .footer-ibe { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; color: var(--cream); letter-spacing: -0.5px; }
+  .footer-note { font-size: 10px; color: var(--green-muted); text-align: right; line-height: 1.4; }
 
-  .song-badges {
-    display: flex;
-    gap: 5px;
-    flex-wrap: wrap;
-    margin-top: 4px;
-    align-items: center;
-  }
+  .copy-wrap { margin-top: 14px; }
+  textarea#texto-copiavel { background: var(--textarea-bg); border: 1px solid var(--textarea-border); border-radius: 10px; color: var(--textarea-text); font-size: 12px; line-height: 1.6; padding: 12px; resize: none; width: 100%; min-height: 80px; }
 
-  .song-badge-nokit {
-    font-size: 8px;
-    font-weight: 700;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    color: var(--terracotta);
-    background: rgba(181,96,58,0.1);
-    padding: 2px 7px;
-    border-radius: 10px;
-  }
-
-  .song-badge-tom {
-    font-size: 9px;
-    font-weight: 700;
-    color: var(--white);
-    background: var(--terracotta);
-    padding: 3px 9px;
-    border-radius: 10px;
-    letter-spacing: 0.3px;
-  }
-
-  .song-voices {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    margin-top: 6px;
-  }
-
-  .voice-line {
-    display: flex;
-    align-items: baseline;
-    gap: 6px;
-  }
-
-  .voice-name {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text-dark);
-    min-width: 80px;
-  }
-
-  .voice-dash {
-    color: var(--green-muted);
-    font-size: 11px;
-  }
-
-  .voice-part {
-    font-size: 13px;
-    color: var(--text-mid);
-    font-weight: 400;
-  }
-
-  .voice-obs {
-    font-size: 11px;
-    color: var(--terracotta);
-    font-style: italic;
-  }
-
-  .card-footer {
-    background: var(--green-deep);
-    padding: 12px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .footer-ibe {
-    font-family: 'Playfair Display', serif;
-    font-size: 18px;
-    font-weight: 700;
-    color: var(--cream);
-    letter-spacing: -0.5px;
-  }
-
-  .footer-note {
-    font-size: 10px;
-    color: var(--green-muted);
-    text-align: right;
-    line-height: 1.4;
-  }
-
-  /* Copy text area */
-  .copy-wrap {
-    margin-top: 14px;
-  }
-
-  textarea#texto-copiavel {
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 10px;
-    color: var(--cream-dark);
-    font-size: 12px;
-    line-height: 1.6;
-    padding: 12px;
-    resize: none;
-    width: 100%;
-    min-height: 80px;
-  }
-
-  .toast {
-    position: fixed;
-    bottom: 30px;
-    left: 50%;
-    transform: translateX(-50%) translateY(80px);
-    background: var(--green-deep);
-    color: var(--cream);
-    padding: 10px 22px;
-    border-radius: 20px;
-    font-size: 13px;
-    font-weight: 500;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-    transition: transform 0.3s ease;
-    z-index: 999;
-    white-space: nowrap;
-  }
-
+  .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--green-deep); color: var(--cream); padding: 10px 22px; border-radius: 20px; font-size: 13px; font-weight: 500; box-shadow: 0 4px 20px rgba(0,0,0,0.3); transition: transform 0.3s ease; z-index: 999; white-space: nowrap; }
   .toast.show { transform: translateX(-50%) translateY(0); }
-
-  /* Divider */
-  .section-sep {
-    border: none;
-    border-top: 1px solid rgba(255,255,255,0.08);
-    margin: 6px 0 16px;
-  }
 
   select option { color: #2a3520; background: #f5f0e8; }
 </style>
 </head>
 <body>
 
-<!-- ══════════════ EDITOR ══════════════ -->
+<button class="theme-toggle" id="theme-btn" onclick="toggleTheme()">☀️</button>
+
+<!-- ══ EDITOR ══ -->
 <div class="editor">
   <div class="editor-header">
     <div class="editor-logo">ibe · ministério de música</div>
     <div class="editor-title">Formação <span>Vocal</span></div>
   </div>
 
-  <!-- Cabeçalho do culto -->
   <div class="card">
     <div class="card-label">Culto</div>
     <div class="input-group">
@@ -726,7 +444,6 @@
     </div>
   </div>
 
-  <!-- Vocalistas -->
   <div class="card">
     <div class="card-label">Vocalistas Escalados</div>
     <div class="tags-wrap" id="tags-vocalistas"></div>
@@ -736,14 +453,20 @@
     </div>
   </div>
 
-  <!-- Músicas -->
   <div id="musicas-container"></div>
 
   <button class="btn-add" style="width:100%;padding:13px;border-radius:12px;font-size:14px;margin-bottom:14px;" onclick="adicionarMusica()">
     + Adicionar Música
   </button>
 
+  <div class="card">
+    <div class="card-label">Observação Geral</div>
+    <textarea id="obs-geral" placeholder="Ex: Ensaio cancelado, confirmar presença com antecedência..." rows="3" oninput="salvarDados()" style="resize:none;"></textarea>
+  </div>
+
   <hr class="section-sep">
+
+  <div class="save-indicator" id="save-indicator">✓ Salvo automaticamente</div>
 
   <div class="actions">
     <button class="btn-primary" onclick="gerarPreview()">Gerar Formação</button>
@@ -751,9 +474,9 @@
   </div>
 </div>
 
-<!-- ══════════════ PREVIEW ══════════════ -->
+<!-- ══ PREVIEW ══ -->
 <div id="preview-section">
-  <div class="preview-label">prévia · toque para copiar</div>
+  <div class="preview-label">prévia · formação gerada</div>
 
   <div id="formacao-card">
     <div class="card-top">
@@ -774,7 +497,7 @@
     <div class="card-body" id="prev-musicas"></div>
     <div class="card-footer">
       <span class="footer-ibe">ibe</span>
-      <span class="footer-note" id="prev-footer-note">Formação Vocal<br>M.M.</span>
+      <span class="footer-note">Formação Vocal<br>M.M.</span>
     </div>
   </div>
 
@@ -789,431 +512,445 @@
   </div>
 </div>
 
-<div class="toast" id="toast">Texto copiado!</div>
+<div class="toast" id="toast"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
-  // ── Repertório com kit vocal (da planilha) ──
-  const repertorioComKit = new Set([
-    "a ele a glória","agradeço","até outra vez","aclame ao senhor","espírito enche a minha vida",
-    "graça","grato sou","gratidão","jesus em tua presença","louvemos ao senhor","muitos virão te louvar",
-    "nenhum deus como tu","nunca me deixou","novo dia","poder para salvar","quão formoso és",
-    "quebrantado","rei meu","seu sangue","sublime","teu povo","tremenda graça","tu és deus - a ele",
-    "tudo é perda","vida aos sepulcros","vou te alegrar","ao único","bondade de deus","descansarei",
-    "deus forte","ele é exaltado","emaús","estrela da manha","eu me rendo","eu te bendirei",
-    "filho do deus vivo","getsêmani","nada além do sangue","o rei está voltando","poderoso deus",
-    "porque ele vive","pra sempre","quão formoso és","rei do meu coração","reina em mim",
-    "rendido estou","santo pra sempre","teu amor não falha","venha o teu reino","vim para adorar-te",
-    "até que ele venha"
-  ]);
+// ══════════════════════════════════════════
+// REPERTÓRIO COM KIT VOCAL
+// Para atualizar: adicione o nome em minúsculas
+// ══════════════════════════════════════════
+const repertorioComKit = new Set([
+  "a ele a glória","agradeço","até outra vez","aclame ao senhor","espírito enche a minha vida",
+  "graça","grato sou","gratidão","jesus em tua presença","louvemos ao senhor","muitos virão te louvar",
+  "nenhum deus como tu","nunca me deixou","novo dia","poder para salvar","quão formoso és",
+  "quebrantado","rei meu","seu sangue","sublime","teu povo","tremenda graça","tu és deus - a ele",
+  "tudo é perda","vida aos sepulcros","vou te alegrar","ao único","bondade de deus","descansarei",
+  "deus forte","ele é exaltado","emaús","estrela da manha","eu me rendo","eu te bendirei",
+  "filho do deus vivo","getsêmani","nada além do sangue","o rei está voltando","poderoso deus",
+  "porque ele vive","pra sempre","rei do meu coração","reina em mim","rendido estou",
+  "santo pra sempre","teu amor não falha","venha o teu reino","vim para adorar-te","até que ele venha"
+]);
 
-  let vocalistas = [];
-  let musicas = [];
-  let musicaCount = 0;
+const VOZES = ["Lead","Soprano","Contralto","Tenor","Abertura Livre","Base"];
+const STORAGE_KEY = 'formacao-vocal-ibe-v2';
 
-  const VOZES = ["Lead","Soprano","Contralto","Tenor","Abertura Livre","Base"];
+let vocalistas = [];
+let musicas = [];
+let dragSrcId = null;
+let saveTimer = null;
 
-  // ── localStorage ──
-  const STORAGE_KEY = 'formacao-vocal-ibe-data';
+// ══ TEMA ══
+function toggleTheme() {
+  const html = document.documentElement;
+  const isDark = html.getAttribute('data-theme') === 'dark';
+  const next = isDark ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  document.getElementById('theme-btn').textContent = next === 'dark' ? '☀️' : '🌙';
+  localStorage.setItem('ibe-theme', next);
+}
 
-  function salvarDados() {
-    const data = {
-      data: document.getElementById('data-culto').value,
-      ministro: document.getElementById('ministro').value,
-      vocalistas,
-      musicas
-    };
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-  }
+function carregarTema() {
+  const saved = localStorage.getItem('ibe-theme') || 'dark';
+  document.documentElement.setAttribute('data-theme', saved);
+  document.getElementById('theme-btn').textContent = saved === 'dark' ? '☀️' : '🌙';
+}
 
-  function carregarDados() {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (!saved) return;
-    try {
-      const data = JSON.parse(saved);
-      document.getElementById('data-culto').value = data.data || '';
-      document.getElementById('ministro').value = data.ministro || '';
-      vocalistas = data.vocalistas || [];
-      musicas = data.musicas || [];
-      renderTags();
-      renderMusicas();
-    } catch (e) {
-      console.error('Erro ao carregar dados:', e);
-    }
-  }
+// ══ LOCALSTORAGE ══
+function salvarDados() {
+  const payload = {
+    data: document.getElementById('data-culto').value,
+    ministro: document.getElementById('ministro').value,
+    obsGeral: document.getElementById('obs-geral').value,
+    vocalistas,
+    musicas
+  };
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
 
-  // Carrega dados ao abrir a página
-  window.addEventListener('DOMContentLoaded', () => {
-    setTimeout(carregarDados, 100);
-  });
+  clearTimeout(saveTimer);
+  const ind = document.getElementById('save-indicator');
+  ind.classList.add('show');
+  saveTimer = setTimeout(() => ind.classList.remove('show'), 1800);
+}
 
-  // ── Vocalistas ──
-  document.getElementById('input-vocalista').addEventListener('keydown', e => {
-    if (e.key === 'Enter') adicionarVocalista();
-  });
-
-  document.getElementById('data-culto').addEventListener('change', () => {
-    salvarDados();
-  });
-
-  document.getElementById('ministro').addEventListener('input', () => {
-    salvarDados();
-  });
-
-  function adicionarVocalista() {
-    const input = document.getElementById('input-vocalista');
-    const nome = input.value.trim();
-    if (!nome || vocalistas.includes(nome)) { input.value = ''; return; }
-    vocalistas.push(nome);
-    input.value = '';
+function carregarDados() {
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if (!raw) return;
+  try {
+    const d = JSON.parse(raw);
+    document.getElementById('data-culto').value = d.data || '';
+    document.getElementById('ministro').value = d.ministro || '';
+    document.getElementById('obs-geral').value = d.obsGeral || '';
+    vocalistas = d.vocalistas || [];
+    musicas = d.musicas || [];
     renderTags();
-    atualizarVozesNasMusicas();
-    salvarDados();
-  }
-
-  function removerVocalista(nome) {
-    vocalistas = vocalistas.filter(v => v !== nome);
-    renderTags();
-    atualizarVozesNasMusicas();
-    salvarDados();
-  }
-
-  function renderTags() {
-    const wrap = document.getElementById('tags-vocalistas');
-    wrap.innerHTML = vocalistas.map(v => `
-      <div class="tag">${v}<button onclick="removerVocalista('${v}')" title="Remover">×</button></div>
-    `).join('');
-  }
-
-  // ── Músicas ──
-  function adicionarMusica() {
-    musicaCount++;
-    const id = `musica-${Date.now()}`;
-    musicas.push({ id, nome: '', tom: '', vozes: {} });
     renderMusicas();
-    salvarDados();
-    setTimeout(() => {
-      const el = document.getElementById(`nome-${id}`);
-      if (el) el.focus();
-    }, 50);
-  }
+  } catch(e) { console.error('Erro ao carregar:', e); }
+}
 
-  function removerMusica(id) {
-    musicas = musicas.filter(m => m.id !== id);
-    renderMusicas();
-    salvarDados();
-  }
+// ══ LISTENERS ══
+document.getElementById('input-vocalista').addEventListener('keydown', e => { if (e.key === 'Enter') adicionarVocalista(); });
+document.getElementById('data-culto').addEventListener('change', salvarDados);
+document.getElementById('ministro').addEventListener('input', salvarDados);
 
-  function renderMusicas() {
-    const container = document.getElementById('musicas-container');
-    container.innerHTML = '';
-    musicas.forEach((m, idx) => {
-      const temKit = temKitVocal(m.nome);
-      const div = document.createElement('div');
-      div.className = 'musica-card';
-      div.id = `card-${m.id}`;
+// ══ VOCALISTAS ══
+function adicionarVocalista() {
+  const input = document.getElementById('input-vocalista');
+  const nome = input.value.trim();
+  if (!nome || vocalistas.includes(nome)) { input.value = ''; return; }
+  vocalistas.push(nome);
+  input.value = '';
+  renderTags();
+  atualizarVozesNasMusicas();
+  salvarDados();
+}
 
-      const vozRows = vocalistas.map(v => {
-        const sel = m.vozes[v] || '';
-        const obs = m.vozObs?.[v] || '';
-        const options = ['', ...VOZES].map(o =>
-          `<option value="${o}" ${sel === o ? 'selected' : ''}>${o}</option>`
-        ).join('');
-        return `
-          <div class="voz-row">
-            <div class="voz-nome">${v}</div>
-            <select class="voz-select" onchange="setVoz('${m.id}','${v}',this.value)">${options}</select>
-          </div>
-          <div style="padding-left:108px; margin-top:-4px; margin-bottom:4px;">
-            <input type="text" class="voz-obs-input" style="font-size:11px;padding:4px 10px;" placeholder="obs (ex: Milena)" value="${obs}" oninput="setVozObs('${m.id}','${v}',this.value)">
-          </div>
-        `;
-      }).join('');
+function removerVocalista(nome) {
+  vocalistas = vocalistas.filter(v => v !== nome);
+  renderTags();
+  atualizarVozesNasMusicas();
+  salvarDados();
+}
 
-      const tomVal = m.tom !== undefined && m.tom !== '' ? Number(m.tom) : 0;
-      const tomLabel = tomVal === 0 ? '0' : (tomVal > 0 ? `+${tomVal}` : `${tomVal}`);
+function renderTags() {
+  document.getElementById('tags-vocalistas').innerHTML = vocalistas.map(v =>
+    `<div class="tag">${v}<button onclick="removerVocalista('${v}')">×</button></div>`
+  ).join('');
+}
 
-      div.innerHTML = `
-        <div class="musica-header">
-          <span class="musica-num">${String(idx+1).padStart(2,'0')}</span>
-          <input type="text" class="musica-nome-input" id="nome-${m.id}" placeholder="Nome da música" value="${m.nome}"
-            oninput="setNomeMusica('${m.id}',this.value)" list="repertorio-list">
-          <button class="btn-remove-musica" onclick="removerMusica('${m.id}')">×</button>
+// ══ MÚSICAS ══
+function adicionarMusica() {
+  const id = `m${Date.now()}`;
+  musicas.push({ id, nome: '', tom: 0, vozes: {}, vozObs: {} });
+  renderMusicas();
+  salvarDados();
+  setTimeout(() => { const el = document.getElementById(`nome-${id}`); if (el) el.focus(); }, 60);
+}
+
+function removerMusica(id) {
+  musicas = musicas.filter(m => m.id !== id);
+  renderMusicas();
+  salvarDados();
+}
+
+function renderMusicas() {
+  const container = document.getElementById('musicas-container');
+  container.innerHTML = '';
+  musicas.forEach((m, idx) => {
+    const temKit = temKitVocal(m.nome);
+    const tomN = Number(m.tom) || 0;
+    const tomLabel = tomN === 0 ? 'Tom original' : (tomN > 0 ? `+${tomN}` : `${tomN}`);
+    const tomClass = tomN === 0 ? 'zero' : '';
+
+    const vozRows = vocalistas.map(v => {
+      const sel = m.vozes?.[v] || '';
+      const obs = m.vozObs?.[v] || '';
+      const opts = ['', ...VOZES].map(o => `<option value="${o}"${sel===o?' selected':''}>${o}</option>`).join('');
+      return `
+        <div class="voz-row">
+          <div class="voz-nome">${v}</div>
+          <select class="voz-select" onchange="setVoz('${m.id}','${v}',this.value)">${opts}</select>
         </div>
-        <div class="musica-meta">
-          <span class="badge-kit ${temKit ? 'tem' : 'nao'}">${temKit ? '✓ Kit Vocal' : '✗ Sem Kit'}</span>
-          <div class="tom-wrap">
-            <div class="tom-fader-row">
-              <input type="range" class="tom-fader" min="-12" max="12" value="${tomVal}"
-                oninput="setTomFader('${m.id}', this.value, this)">
-              <span class="tom-value ${tomVal === 0 ? 'zero' : ''}" id="tom-val-${m.id}">${tomLabel}</span>
-            </div>
-            <div class="tom-label">Semitons</div>
-          </div>
-        </div>
-        <div class="musica-vozes">${vozRows}</div>
-      `;
-      container.appendChild(div);
-    });
-  }
-
-  function setNomeMusica(id, val) {
-    const m = musicas.find(x => x.id === id);
-    if (m) {
-      m.nome = val;
-      const badge = document.querySelector(`#card-${id} .badge-kit`);
-      if (badge) {
-        const t = temKitVocal(val);
-        badge.className = `badge-kit ${t ? 'tem' : 'nao'}`;
-        badge.textContent = t ? '✓ Kit Vocal' : '✗ Sem Kit';
-      }
-      salvarDados();
-    }
-  }
-
-  function setTomFader(id, val, el) {
-    const m = musicas.find(x => x.id === id);
-    const n = Number(val);
-    if (m) m.tom = n;
-    const label = document.getElementById(`tom-val-${id}`);
-    if (label) {
-      const newText = n === 0 ? 'Tom original' : (n > 0 ? `+${n}` : `${n}`);
-      const wasZero = label.className.includes('zero');
-      const isZero = n === 0;
-      
-      label.textContent = newText;
-      
-      // Só atualiza classe se realmente mudou de zero pra não-zero
-      if (wasZero !== isZero) {
-        label.className = `tom-value ${isZero ? 'zero' : ''}`;
-      }
-    }
-    salvarDados();
-  }
-
-  function setVoz(id, vocalista, voz) {
-    const m = musicas.find(x => x.id === id);
-    if (m) { if (!m.vozes) m.vozes = {}; m.vozes[vocalista] = voz; }
-    salvarDados();
-  }
-
-  function setVozObs(id, vocalista, obs) {
-    const m = musicas.find(x => x.id === id);
-    if (m) { if (!m.vozObs) m.vozObs = {}; m.vozObs[vocalista] = obs; }
-    salvarDados();
-  }
-
-  function atualizarVozesNasMusicas() {
-    // sync vozes obj
-    musicas.forEach(m => {
-      if (!m.vozes) m.vozes = {};
-      if (!m.vozObs) m.vozObs = {};
-    });
-    renderMusicas();
-  }
-
-  function temKitVocal(nome) {
-    return repertorioComKit.has((nome || '').toLowerCase().trim());
-  }
-
-  // ── Gerar Preview ──
-  function gerarPreview() {
-    // Sync nomes dos inputs antes de gerar (tom já sincronizado via setTomFader)
-    musicas.forEach(m => {
-      const nomeEl = document.getElementById(`nome-${m.id}`);
-      if (nomeEl) m.nome = nomeEl.value;
-      // sync fader value too
-      const faderEl = document.querySelector(`#card-${m.id} .tom-fader`);
-      if (faderEl) m.tom = Number(faderEl.value);
-    });
-
-    const data = document.getElementById('data-culto').value;
-    const ministro = document.getElementById('ministro').value;
-
-    // Format date
-    let dataFmt = '—';
-    if (data) {
-      const d = new Date(data + 'T00:00:00');
-      dataFmt = d.toLocaleDateString('pt-BR', { day:'2-digit', month:'2-digit', year:'numeric' });
-    }
-
-    document.getElementById('prev-data').textContent = dataFmt;
-    document.getElementById('prev-ministro').textContent = ministro || '—';
-    document.getElementById('prev-footer-note').innerHTML = `Formação Vocal<br>M.M.`;
-
-    // Músicas
-    const bodyEl = document.getElementById('prev-musicas');
-    bodyEl.innerHTML = '';
-
-    musicas.forEach((m, idx) => {
-      if (!m.nome.trim()) return;
-      const temKit = temKitVocal(m.nome);
-      const div = document.createElement('div');
-      div.className = 'song-block';
-
-      const badges = [];
-      if (!temKit) badges.push(`<span class="song-badge-nokit">sem kit</span>`);
-      const tomN = Number(m.tom);
-      if (tomN !== 0) {
-        const tomStr = tomN > 0 ? `+${tomN}` : `${tomN}`;
-        badges.push(`<span class="song-badge-tom">${tomStr} st</span>`);
-      } else if (tomN === 0 && m.tom !== undefined && m.tom !== '') {
-        badges.push(`<span class="song-badge-tom">Tom original</span>`);
-      }
-
-      const vozeLines = vocalistas.map(v => {
-        const parte = m.vozes[v] || '';
-        const obs = m.vozObs?.[v] || '';
-        if (!parte) return '';
-        const obsHtml = obs ? ` <span class="voice-obs">(${obs})</span>` : '';
-        return `<div class="voice-line">
-          <span class="voice-name">${v}</span>
-          <span class="voice-dash">—</span>
-          <span class="voice-part">${parte}</span>${obsHtml}
+        <div style="padding-left:108px;margin-top:-4px;margin-bottom:4px;">
+          <input type="text" class="voz-obs-input" style="font-size:11px;padding:4px 10px;" placeholder="obs (ex: Milena)" value="${obs}" oninput="setVozObs('${m.id}','${v}',this.value)">
         </div>`;
-      }).filter(Boolean).join('');
+    }).join('');
 
-      div.innerHTML = `
-        <div class="song-block-header">
-          <span class="song-index">${String(idx+1).padStart(2,'0')}</span>
-          <div class="song-title-wrap">
-            <div class="song-title">${m.nome}</div>
-            ${badges.length ? `<div class="song-badges">${badges.join('')}</div>` : ''}
+    const div = document.createElement('div');
+    div.className = 'musica-card';
+    div.id = `card-${m.id}`;
+    div.draggable = true;
+    div.innerHTML = `
+      <div class="musica-header">
+        <span class="drag-handle" title="Arrastar para reordenar">⠿</span>
+        <span class="musica-num">${String(idx+1).padStart(2,'0')}</span>
+        <input type="text" class="musica-nome-input" id="nome-${m.id}" placeholder="Nome da música" value="${m.nome}"
+          oninput="setNomeMusica('${m.id}',this.value)" list="repertorio-list">
+        <button class="btn-remove-musica" onclick="removerMusica('${m.id}')">×</button>
+      </div>
+      <div class="musica-meta">
+        <span class="badge-kit ${temKit?'tem':'nao'}">${temKit?'✓ Kit Vocal':'✗ Sem Kit'}</span>
+        <div class="tom-wrap">
+          <div class="tom-fader-row">
+            <input type="range" class="tom-fader" min="-12" max="12" value="${tomN}" oninput="setTomFader('${m.id}',this.value)">
+            <span class="tom-value ${tomClass}" id="tom-val-${m.id}">${tomLabel}</span>
           </div>
+          <div class="tom-label">Semitons</div>
         </div>
-        <div class="song-voices">${vozeLines}</div>
-      `;
-      bodyEl.appendChild(div);
+      </div>
+      <div class="musica-vozes">${vozRows}</div>`;
+
+    // Drag & Drop — só ativa pelo handle ⠿
+    div.draggable = false; // desativado por padrão
+    const handle = div.querySelector('.drag-handle');
+    handle.addEventListener('mousedown', () => { div.draggable = true; });
+    handle.addEventListener('touchstart', () => { div.draggable = true; });
+    document.addEventListener('mouseup', () => { div.draggable = false; }, { once: false });
+
+    div.addEventListener('dragstart', e => {
+      if (!div.draggable) { e.preventDefault(); return; }
+      dragSrcId = m.id;
+      div.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+    });
+    div.addEventListener('dragend', () => {
+      div.draggable = false;
+      div.classList.remove('dragging');
+      document.querySelectorAll('.musica-card').forEach(c => c.classList.remove('drag-over'));
+    });
+    div.addEventListener('dragover', e => { e.preventDefault(); div.classList.add('drag-over'); });
+    div.addEventListener('dragleave', () => div.classList.remove('drag-over'));
+    div.addEventListener('drop', e => {
+      e.preventDefault();
+      div.classList.remove('drag-over');
+      if (dragSrcId === m.id) return;
+      const si = musicas.findIndex(x => x.id === dragSrcId);
+      const ti = musicas.findIndex(x => x.id === m.id);
+      if (si < 0 || ti < 0) return;
+      const [item] = musicas.splice(si, 1);
+      musicas.splice(ti, 0, item);
+      renderMusicas();
+      salvarDados();
     });
 
-    // Texto copiável
-    gerarTexto(dataFmt, ministro);
-
-    document.querySelector('.editor').style.display = 'none';
-    document.getElementById('preview-section').style.display = 'block';
-    window.scrollTo(0, 0);
-  }
-
-  function gerarTexto(data, ministro) {
-    let txt = `🎵 *FORMAÇÃO VOCAL — M.M. IBE*\n`;
-    txt += `📅 ${data}  👤 ${ministro || '—'}\n`;
-    txt += `${'─'.repeat(28)}\n\n`;
-
-    musicas.forEach((m, idx) => {
-      if (!m.nome.trim()) return;
-      const temKit = temKitVocal(m.nome);
-      const tomN = Number(m.tom);
-      txt += `*${String(idx+1).padStart(2,'0')}. ${m.nome}*`;
-      if (!temKit) txt += ` _(sem kit)_`;
-      if (tomN !== 0) {
-        txt += `\n⚠️ *${tomN > 0 ? '+' : ''}${tomN} semitons*`;
-      } else if (tomN === 0 && m.tom !== undefined && m.tom !== '') {
-        txt += `\n_Tom original_`;
-      }
-      txt += '\n';
-      vocalistas.forEach(v => {
-        const parte = m.vozes[v] || '';
-        const obs = m.vozObs?.[v] || '';
-        if (parte) txt += `  ${v} — ${parte}${obs ? ` (${obs})` : ''}\n`;
-      });
-      txt += '\n';
-    });
-
-    document.getElementById('texto-copiavel').value = txt.trim();
-  }
-
-  function voltarEditor() {
-    document.querySelector('.editor').style.display = 'block';
-    document.getElementById('preview-section').style.display = 'none';
-  }
-
-  function copiarTexto() {
-    const el = document.getElementById('texto-copiavel');
-    el.select();
-    el.setSelectionRange(0, 99999);
-    navigator.clipboard.writeText(el.value).then(() => showToast('Texto copiado!')).catch(() => {
-      document.execCommand('copy');
-      showToast('Texto copiado!');
-    });
-  }
-
-  function salvarImagem() {
-    const btn = document.getElementById('btn-salvar');
-    btn.textContent = '⏳ Gerando...';
-    btn.disabled = true;
-
-    const card = document.getElementById('formacao-card');
-    html2canvas(card, {
-      scale: 2,
-      useCORS: true,
-      backgroundColor: null,
-      logging: false
-    }).then(canvas => {
-      canvas.toBlob(blob => {
-        // Tenta copiar para área de transferência
-        if (navigator.clipboard && typeof ClipboardItem !== 'undefined') {
-          const item = new ClipboardItem({ 'image/png': blob });
-          navigator.clipboard.write([item]).then(() => {
-            btn.textContent = '📸 Copiar Imagem';
-            btn.disabled = false;
-            showToast('Imagem copiada!');
-          }).catch(() => {
-            // Fallback: download
-            baixarImagem(canvas);
-            btn.textContent = '📸 Copiar Imagem';
-            btn.disabled = false;
-          });
-        } else {
-          // Clipboard API não disponível: download direto
-          baixarImagem(canvas);
-          btn.textContent = '📸 Copiar Imagem';
-          btn.disabled = false;
-        }
-      }, 'image/png');
-    }).catch(() => {
-      btn.textContent = '📸 Copiar Imagem';
-      btn.disabled = false;
-      showToast('Erro ao gerar imagem');
-    });
-  }
-
-  function baixarImagem(canvas) {
-    const link = document.createElement('a');
-    const data = document.getElementById('prev-data').textContent.replace(/\//g, '-');
-    link.download = `formacao-vocal-${data}.png`;
-    link.href = canvas.toDataURL('image/png');
-    link.click();
-    showToast('Imagem baixada (clipboard indisponível)');
-  }
-
-  function showToast(msg) {
-    const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 2200);
-  }
-
-  function limparTudo() {
-    if (!confirm('Limpar toda a formação?')) return;
-    vocalistas = [];
-    musicas = [];
-    musicaCount = 0;
-    document.getElementById('data-culto').value = '';
-    document.getElementById('ministro').value = '';
-    renderTags();
-    renderMusicas();
-  }
-
-  // Datalist para autocomplete
-  const dl = document.createElement('datalist');
-  dl.id = 'repertorio-list';
-  const todasMusicas = ["A Ele A Glória","Agradeço","Até o fim","Até outra vez","Ao único","Aclame ao Senhor","Amo o Senhor","Basta uma palavra","Bom Perfume","Da vida o melhor","Eu te vejo em Tudo","É o teu povo","Espírito Enche A Minha Vida","Graça","Grato Sou","Gratidão","Grande é o nosso Deus","Hosana","Jesus em Tua Presença","Jesus o Plano Perfeito","Louvemos Ao Senhor","Muitos Virão Te Louvar","Meu tributo","Nenhum Deus Como Tu","Nunca Me Deixou","Nenhuma condenação há","Novo dia","O amor de Deus (logo eu)","Poder Para Salvar","Quão Formoso És","Que Segurança","Quebrantado","Rei Meu","Reina","Seu Sangue","Sou feliz","Sublime","Toma o teu lugar","Tão Profundo","Teu Povo","Tremenda Graça","Tu És Deus - A Ele","Tudo é Perda","Vida Aos Sepulcros","Vou Te Alegrar","Vinho e Pão","Vencendo vem Jesus/Sê valente","Bondade De Deus","Deus Forte","Ele é Exaltado","Emaús","Eu Me Rendo","Filho do Deus Vivo","Getsêmani","Nada Além do Sangue","O Rei Está Voltando","Porque Ele Vive","Pra Sempre","Rei Do Meu Coração","Reina em Mim","Rendido Estou","Teu Amor Não Falha","Venha o Teu Reino","Vim Para Adorar-te","Até que Ele venha"];
-  todasMusicas.forEach(n => {
-    const opt = document.createElement('option');
-    opt.value = n;
-    dl.appendChild(opt);
+    container.appendChild(div);
   });
-  document.body.appendChild(dl);
+}
+
+function setNomeMusica(id, val) {
+  const m = musicas.find(x => x.id === id);
+  if (!m) return;
+  m.nome = val;
+  const badge = document.querySelector(`#card-${id} .badge-kit`);
+  if (badge) {
+    const t = temKitVocal(val);
+    badge.className = `badge-kit ${t?'tem':'nao'}`;
+    badge.textContent = t ? '✓ Kit Vocal' : '✗ Sem Kit';
+  }
+  salvarDados();
+}
+
+function setTomFader(id, val) {
+  const m = musicas.find(x => x.id === id);
+  const n = Number(val);
+  if (m) m.tom = n;
+  const label = document.getElementById(`tom-val-${id}`);
+  if (!label) return;
+  const newText = n === 0 ? 'Tom original' : (n > 0 ? `+${n}` : `${n}`);
+  const newClass = `tom-value${n === 0 ? ' zero' : ''}`;
+  if (label.textContent !== newText) label.textContent = newText;
+  if (label.className !== newClass) label.className = newClass;
+  salvarDados();
+}
+
+function setVoz(id, vocalista, voz) {
+  const m = musicas.find(x => x.id === id);
+  if (m) { if (!m.vozes) m.vozes = {}; m.vozes[vocalista] = voz; }
+  salvarDados();
+}
+
+function setVozObs(id, vocalista, obs) {
+  const m = musicas.find(x => x.id === id);
+  if (m) { if (!m.vozObs) m.vozObs = {}; m.vozObs[vocalista] = obs; }
+  salvarDados();
+}
+
+function atualizarVozesNasMusicas() {
+  musicas.forEach(m => { if (!m.vozes) m.vozes = {}; if (!m.vozObs) m.vozObs = {}; });
+  renderMusicas();
+}
+
+function temKitVocal(nome) {
+  return repertorioComKit.has((nome || '').toLowerCase().trim());
+}
+
+// ══ PREVIEW ══
+function gerarPreview() {
+  musicas.forEach(m => {
+    const el = document.getElementById(`nome-${m.id}`);
+    if (el) m.nome = el.value;
+    const fdr = document.querySelector(`#card-${m.id} .tom-fader`);
+    if (fdr) m.tom = Number(fdr.value);
+  });
+
+  // ── Validações ──
+  const musicasSemVoz = musicas.filter(m => m.nome.trim() && vocalistas.every(v => !m.vozes?.[v]));
+  const voc_semVoz = musicas
+    .filter(m => m.nome.trim())
+    .flatMap(m => vocalistas.filter(v => !m.vozes?.[v]).map(v => `${v} em "${m.nome}"`));
+
+  const avisos = [];
+  if (musicasSemVoz.length) avisos.push(`⚠️ ${musicasSemVoz.length} música(s) sem nenhuma voz atribuída.`);
+  if (voc_semVoz.length && !musicasSemVoz.length) {
+    const uniq = [...new Set(vocalistas.filter(v => musicas.some(m => m.nome.trim() && !m.vozes?.[v])))];
+    if (uniq.length) avisos.push(`⚠️ Vocalistas sem voz em alguma música: ${uniq.join(', ')}.`);
+  }
+  if (avisos.length) {
+    const continuar = confirm(avisos.join('\n') + '\n\nDeseja gerar mesmo assim?');
+    if (!continuar) return;
+  }
+
+  const data = document.getElementById('data-culto').value;
+  const ministro = document.getElementById('ministro').value;
+  const obsGeral = document.getElementById('obs-geral').value.trim();
+
+  let dataFmt = '—';
+  if (data) {
+    const d = new Date(data + 'T00:00:00');
+    dataFmt = d.toLocaleDateString('pt-BR', { day:'2-digit', month:'2-digit', year:'numeric' });
+  }
+
+  document.getElementById('prev-data').textContent = dataFmt;
+  document.getElementById('prev-ministro').textContent = ministro || '—';
+
+  const bodyEl = document.getElementById('prev-musicas');
+  bodyEl.innerHTML = '';
+
+  musicas.forEach((m, idx) => {
+    if (!m.nome.trim()) return;
+    const temKit = temKitVocal(m.nome);
+    const tomN = Number(m.tom) || 0;
+
+    const badges = [];
+    if (!temKit) badges.push(`<span class="song-badge-nokit">sem kit</span>`);
+    if (tomN !== 0) {
+      badges.push(`<span class="song-badge-tom">${tomN > 0 ? '+' : ''}${tomN} st</span>`);
+    } else {
+      badges.push(`<span class="song-badge-original">Tom original</span>`);
+    }
+
+    const vozeLines = vocalistas.map(v => {
+      const parte = m.vozes?.[v] || '';
+      const obs = m.vozObs?.[v] || '';
+      if (!parte) return '';
+      return `<div class="voice-line">
+        <span class="voice-name">${v}</span>
+        <span class="voice-dash">—</span>
+        <span class="voice-part">${parte}</span>
+        ${obs ? `<span class="voice-obs">(${obs})</span>` : ''}
+      </div>`;
+    }).filter(Boolean).join('');
+
+    const div = document.createElement('div');
+    div.className = 'song-block';
+    div.innerHTML = `
+      <div class="song-block-header">
+        <span class="song-index">${String(idx+1).padStart(2,'0')}</span>
+        <div class="song-title-wrap">
+          <div class="song-title">${m.nome}</div>
+          <div class="song-badges">${badges.join('')}</div>
+        </div>
+      </div>
+      <div class="song-voices">${vozeLines}</div>`;
+    bodyEl.appendChild(div);
+  });
+
+  // Observação geral no card
+  if (obsGeral) {
+    const obsDiv = document.createElement('div');
+    obsDiv.className = 'card-obs-geral';
+    obsDiv.innerHTML = `<div class="card-obs-label">Observação</div><div class="card-obs-text">${obsGeral}</div>`;
+    bodyEl.appendChild(obsDiv);
+  }
+
+  gerarTexto(dataFmt, ministro, obsGeral);
+
+  document.querySelector('.editor').style.display = 'none';
+  document.getElementById('preview-section').style.display = 'block';
+  window.scrollTo(0, 0);
+}
+
+function gerarTexto(data, ministro, obsGeral) {
+  let txt = `🎵 *FORMAÇÃO VOCAL — M.M. IBE*\n`;
+  txt += `📅 ${data}  👤 ${ministro || '—'}\n`;
+  txt += `${'─'.repeat(28)}\n\n`;
+
+  musicas.forEach((m, idx) => {
+    if (!m.nome.trim()) return;
+    const temKit = temKitVocal(m.nome);
+    const tomN = Number(m.tom) || 0;
+    txt += `*${String(idx+1).padStart(2,'0')}. ${m.nome}*`;
+    if (!temKit) txt += ` _(sem kit)_`;
+    if (tomN !== 0) txt += `\n⚠️ *${tomN > 0 ? '+' : ''}${tomN} semitons*`;
+    txt += '\n';
+    vocalistas.forEach(v => {
+      const parte = m.vozes?.[v] || '';
+      const obs = m.vozObs?.[v] || '';
+      if (parte) txt += `  ${v} — ${parte}${obs ? ` (${obs})` : ''}\n`;
+    });
+    txt += '\n';
+  });
+
+  if (obsGeral) txt += `📌 _${obsGeral}_\n`;
+  document.getElementById('texto-copiavel').value = txt.trim();
+}
+
+function voltarEditor() {
+  document.querySelector('.editor').style.display = 'block';
+  document.getElementById('preview-section').style.display = 'none';
+}
+
+function copiarTexto() {
+  const el = document.getElementById('texto-copiavel');
+  el.select(); el.setSelectionRange(0, 99999);
+  navigator.clipboard.writeText(el.value).then(() => showToast('Texto copiado!')).catch(() => { document.execCommand('copy'); showToast('Texto copiado!'); });
+}
+
+function salvarImagem() {
+  const btn = document.getElementById('btn-salvar');
+  btn.textContent = '⏳ Gerando...';
+  btn.disabled = true;
+  html2canvas(document.getElementById('formacao-card'), { scale: 2, useCORS: true, backgroundColor: null, logging: false })
+    .then(canvas => {
+      canvas.toBlob(blob => {
+        if (navigator.clipboard && typeof ClipboardItem !== 'undefined') {
+          navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })])
+            .then(() => { btn.textContent = '📸 Copiar Imagem'; btn.disabled = false; showToast('Imagem copiada!'); })
+            .catch(() => { baixarImagem(canvas); btn.textContent = '📸 Copiar Imagem'; btn.disabled = false; });
+        } else { baixarImagem(canvas); btn.textContent = '📸 Copiar Imagem'; btn.disabled = false; }
+      }, 'image/png');
+    })
+    .catch(() => { btn.textContent = '📸 Copiar Imagem'; btn.disabled = false; showToast('Erro ao gerar imagem'); });
+}
+
+function baixarImagem(canvas) {
+  const link = document.createElement('a');
+  const data = document.getElementById('prev-data').textContent.replace(/\//g, '-');
+  link.download = `formacao-vocal-${data}.png`;
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+  showToast('Imagem baixada!');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+function limparTudo() {
+  if (!confirm('Limpar toda a formação atual?')) return;
+  vocalistas = []; musicas = [];
+  document.getElementById('data-culto').value = '';
+  document.getElementById('ministro').value = '';
+  document.getElementById('obs-geral').value = '';
+  renderTags(); renderMusicas();
+  localStorage.removeItem(STORAGE_KEY);
+}
+
+// ══ AUTOCOMPLETE ══
+const dl = document.createElement('datalist');
+dl.id = 'repertorio-list';
+["A Ele A Glória","Agradeço","Até o fim","Até outra vez","Ao único","Aclame ao Senhor","Amo o Senhor","Basta uma palavra","Bom Perfume","Da vida o melhor","Eu te vejo em Tudo","É o teu povo","Espírito Enche A Minha Vida","Graça","Grato Sou","Gratidão","Grande é o nosso Deus","Hosana","Jesus em Tua Presença","Jesus o Plano Perfeito","Louvemos Ao Senhor","Muitos Virão Te Louvar","Meu tributo","Nenhum Deus Como Tu","Nunca Me Deixou","Nenhuma condenação há","Novo dia","O amor de Deus (logo eu)","Poder Para Salvar","Quão Formoso És","Que Segurança","Quebrantado","Rei Meu","Reina","Seu Sangue","Sou feliz","Sublime","Toma o teu lugar","Tão Profundo","Teu Povo","Tremenda Graça","Tu És Deus - A Ele","Tudo é Perda","Vida Aos Sepulcros","Vou Te Alegrar","Vinho e Pão","Vencendo vem Jesus/Sê valente","Bondade De Deus","Deus Forte","Ele é Exaltado","Emaús","Eu Me Rendo","Filho do Deus Vivo","Getsêmani","Nada Além do Sangue","O Rei Está Voltando","Porque Ele Vive","Pra Sempre","Rei Do Meu Coração","Reina em Mim","Rendido Estou","Teu Amor Não Falha","Venha o Teu Reino","Vim Para Adorar-te","Até que Ele venha"]
+.forEach(n => { const o = document.createElement('option'); o.value = n; dl.appendChild(o); });
+document.body.appendChild(dl);
+
+// ══ INIT ══
+window.addEventListener('DOMContentLoaded', () => {
+  carregarTema();
+  setTimeout(carregarDados, 100);
+});
 </script>
 </body>
 </html>
