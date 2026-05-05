@@ -1013,7 +1013,8 @@ function removerVocalista(nome) {
 }
 
 function renderTags() {
-  document.getElementById('tags-vocalistas').innerHTML = vocalistas.map(v =>
+  const sorted = [...vocalistas].sort((a, b) => a.localeCompare(b, 'pt'));
+  document.getElementById('tags-vocalistas').innerHTML = sorted.map(v =>
     `<div class="tag">${v}<button onclick="removerVocalista('${v}')">×</button></div>`
   ).join('');
 }
@@ -1052,7 +1053,7 @@ function renderMusicas() {
           <select class="voz-select" onchange="setVoz('${m.id}','${v}',this.value)">${opts}</select>
         </div>
         <div style="padding-left:104px;margin-top:-2px;margin-bottom:4px;">
-          <input type="text" class="voz-obs-input" style="font-size:11px;padding:4px 10px;" placeholder="obs (ex: Milena)" value="${obs}" oninput="setVozObs('${m.id}','${v}',this.value)">
+          <input type="text" class="voz-obs-input" style="font-size:11px;padding:4px 10px;" placeholder="Observações" value="${obs}" oninput="setVozObs('${m.id}','${v}',this.value)">
         </div>`;
     }).join('');
 
@@ -1343,13 +1344,15 @@ function limparTudo() {
 // ══ AUTOCOMPLETE ══
 const dlVoc = document.createElement('datalist');
 dlVoc.id = 'vocalistas-list';
-["Aline","Cristina","Ângela Aguiar","Beatriz","Brendon","Geovana","Joab","Letícia","Merari","Nara","Pedro","Priscila","Angela Melo","Gabriel"]
+["Aline","Angela Melo","Ângela Aguiar","Beatriz","Brendon","Cristina","Gabriel","Geovana","Joab","Letícia","Merari","Nara","Pedro","Priscila"]
+.sort((a,b) => a.localeCompare(b,'pt'))
 .forEach(n => { const o = document.createElement('option'); o.value = n; dlVoc.appendChild(o); });
 document.body.appendChild(dlVoc);
 
 const dl = document.createElement('datalist');
 dl.id = 'repertorio-list';
-["A Ele A Glória","Agradeço","Até o fim","Até outra vez","Ao único","Aclame ao Senhor","Amo o Senhor","Basta uma palavra","Bom Perfume","Da vida o melhor","Eu te vejo em Tudo","É o teu povo","Espírito Enche A Minha Vida","Graça","Grato Sou","Gratidão","Grande é o nosso Deus","Hosana","Jesus em Tua Presença","Jesus o Plano Perfeito","Louvemos Ao Senhor","Muitos Virão Te Louvar","Meu tributo","Nenhum Deus Como Tu","Nunca Me Deixou","Nenhuma condenação há","Novo dia","O amor de Deus (logo eu)","Poder Para Salvar","Quão Formoso És","Que Segurança","Quebrantado","Rei Meu","Reina","Seu Sangue","Sou feliz","Sublime","Toma o teu lugar","Tão Profundo","Teu Povo","Tremenda Graça","Tu És Deus - A Ele","Tudo é Perda","Vida Aos Sepulcros","Vou Te Alegrar","Vinho e Pão","Vencendo vem Jesus/Sê valente","Bondade De Deus","Deus Forte","Ele é Exaltado","Emaús","Eu Me Rendo","Filho do Deus Vivo","Getsêmani","Nada Além do Sangue","O Rei Está Voltando","Porque Ele Vive","Pra Sempre","Rei Do Meu Coração","Reina em Mim","Rendido Estou","Teu Amor Não Falha","Venha o Teu Reino","Vim Para Adorar-te","Até que Ele venha"]
+["A Ele A Glória","Aclame ao Senhor","Agradeço","Amo o Senhor","Ao único","Até o fim","Até outra vez","Até que Ele venha","Basta uma palavra","Bondade De Deus","Bom Perfume","Da vida o melhor","Deus Forte","Ele é Exaltado","Emaús","Espírito Enche A Minha Vida","Eu Me Rendo","Eu te vejo em Tudo","É o teu povo","Filho do Deus Vivo","Getsêmani","Graça","Grande é o nosso Deus","Grato Sou","Gratidão","Hosana","Jesus em Tua Presença","Jesus o Plano Perfeito","Louvemos Ao Senhor","Meu tributo","Muitos Virão Te Louvar","Nada Além do Sangue","Nenhum Deus Como Tu","Nenhuma condenação há","Novo dia","Nunca Me Deixou","O Rei Está Voltando","O amor de Deus (logo eu)","Poder Para Salvar","Porque Ele Vive","Pra Sempre","Quão Formoso És","Que Segurança","Quebrantado","Rei Do Meu Coração","Rei Meu","Reina","Reina em Mim","Rendido Estou","Seu Sangue","Sou feliz","Sublime","Tão Profundo","Teu Amor Não Falha","Teu Povo","Toma o teu lugar","Tremenda Graça","Tu És Deus - A Ele","Tudo é Perda","Vencendo vem Jesus/Sê valente","Venha o Teu Reino","Vida Aos Sepulcros","Vim Para Adorar-te","Vinho e Pão","Vou Te Alegrar"]
+.sort((a,b) => a.localeCompare(b,'pt'))
 .forEach(n => { const o = document.createElement('option'); o.value = n; dl.appendChild(o); });
 document.body.appendChild(dl);
 
