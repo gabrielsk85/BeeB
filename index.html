@@ -850,9 +850,31 @@ select option { color: #2a3520; background: #f5f0e8; }
 
   <div class="actions">
     <button class="btn-primary" onclick="gerarPreview()">Gerar Formação</button>
-    <button class="btn-secondary" onclick="limparTudo()">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline;vertical-align:-2px;margin-right:5px;"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.5"/></svg>Recomeçar
-    </button>
+    <div style="display:flex;gap:8px;">
+      <button class="btn-secondary" style="flex:1;" onclick="limparTudo()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline;vertical-align:-2px;margin-right:5px;"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.5"/></svg>Recomeçar
+      </button>
+      <button class="btn-secondary" style="flex:1;" onclick="abrirImportar()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline;vertical-align:-2px;margin-right:5px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>Importar
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ IMPORT MODAL ══ -->
+<div id="import-modal" style="display:none;position:fixed;inset:0;z-index:500;align-items:center;justify-content:center;padding:20px;">
+  <div id="import-backdrop" onclick="fecharImportar()" style="position:absolute;inset:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);"></div>
+  <div style="position:relative;width:100%;max-width:440px;background:var(--glass);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid var(--glass-border);border-radius:18px;padding:22px;box-shadow:0 20px 60px rgba(0,0,0,0.5);">
+    <div style="font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--txt-label);margin-bottom:14px;">Importar Formação</div>
+    <textarea id="import-text" rows="12" placeholder="Cole aqui o texto exportado..." style="resize:none;width:100%;background:var(--glass-input);border:1px solid var(--glass-input-border);border-radius:10px;padding:12px;font-family:'DM Sans',sans-serif;font-size:12px;line-height:1.7;color:var(--txt);outline:none;"></textarea>
+    <div style="font-size:10px;color:var(--txt-sub);margin:10px 0 14px;line-height:1.6;opacity:0.7;">
+      Formato esperado:<br>
+      <code style="font-size:10px;color:var(--txt-label);">DATA: 11/05/2026 · MINISTRO: Nome · Nome da música / -3st · Vocalista: Voz</code>
+    </div>
+    <div style="display:flex;gap:8px;">
+      <button class="btn-primary" style="flex:1;margin-bottom:0;" onclick="importarFormacao()">Carregar</button>
+      <button class="btn-secondary" style="flex:1;margin-bottom:0;" onclick="fecharImportar()">Cancelar</button>
+    </div>
   </div>
 </div>
 
@@ -1246,25 +1268,26 @@ function gerarPreview() {
 }
 
 function gerarTexto(data, ministro, obsGeral) {
-  let txt = `*FORMAÇÃO VOCAL — M.M. IBE*\n`;
-  txt += `${data}  |  ${ministro || '—'}\n`;
-  txt += `${'─'.repeat(28)}\n\n`;
-  musicas.forEach((m, idx) => {
+  let txt = `DATA: ${data}\n`;
+  txt += `MINISTRO: ${ministro || '—'}\n\n`;
+  musicas.forEach(m => {
     if (!m.nome.trim()) return;
     const temKit = temKitVocal(m.nome);
     const tomN = Number(m.tom) || 0;
-    txt += `*${String(idx+1).padStart(2,'0')}. ${m.nome}*`;
-    if (!temKit) txt += ` _(sem kit)_`;
-    if (tomN !== 0) txt += `\n! *${tomN > 0 ? '+' : ''}${tomN} semitons*`;
-    txt += '\n';
+    let linha = m.nome;
+    const extras = [];
+    if (tomN !== 0) extras.push(`${tomN > 0 ? '+' : ''}${tomN}st`);
+    if (!temKit) extras.push('sem kit');
+    if (extras.length) linha += ` / ${extras.join(' / ')}`;
+    txt += linha + '\n';
     vocalistas.forEach(v => {
       const parte = m.vozes?.[v] || '';
       const obs = m.vozObs?.[v] || '';
-      if (parte) txt += `  ${v} — ${parte}${obs ? ` (${obs})` : ''}\n`;
+      if (parte) txt += `${v}: ${parte}${obs ? ` (${obs})` : ''}\n`;
     });
     txt += '\n';
   });
-  if (obsGeral) txt += `* _${obsGeral}_\n`;
+  if (obsGeral) txt += `OBS: ${obsGeral}\n`;
   document.getElementById('texto-copiavel').value = txt.trim();
 }
 
@@ -1341,7 +1364,103 @@ function limparTudo() {
   localStorage.removeItem(STORAGE_KEY);
 }
 
-// ══ AUTOCOMPLETE ══
+// ══ IMPORTAR ══
+function abrirImportar() {
+  const modal = document.getElementById('import-modal');
+  modal.style.display = 'flex';
+  document.getElementById('import-text').value = '';
+  setTimeout(() => document.getElementById('import-text').focus(), 100);
+}
+
+function fecharImportar() {
+  document.getElementById('import-modal').style.display = 'none';
+}
+
+function importarFormacao() {
+  const raw = document.getElementById('import-text').value.trim();
+  if (!raw) return;
+
+  const linhas = raw.split('\n').map(l => l.trim());
+  let novaData = '';
+  let novoMinistro = '';
+  let novaObs = '';
+  const novasMusicas = [];
+  const novosVocalistas = new Set();
+  let musicaAtual = null;
+
+  for (const linha of linhas) {
+    if (!linha) {
+      musicaAtual = null;
+      continue;
+    }
+
+    // DATA:
+    if (/^DATA:/i.test(linha)) {
+      novaData = linha.replace(/^DATA:\s*/i, '').trim();
+      // Converte dd/mm/aaaa para yyyy-mm-dd para o input date
+      const partes = novaData.match(/(\d{2})\/(\d{2})\/(\d{4})/);
+      if (partes) novaData = `${partes[3]}-${partes[2]}-${partes[1]}`;
+      continue;
+    }
+
+    // MINISTRO:
+    if (/^MINISTRO:/i.test(linha)) {
+      novoMinistro = linha.replace(/^MINISTRO:\s*/i, '').trim();
+      continue;
+    }
+
+    // OBS:
+    if (/^OBS:/i.test(linha)) {
+      novaObs = linha.replace(/^OBS:\s*/i, '').trim();
+      continue;
+    }
+
+    // Vocalista: Voz — linha de atribuição de voz
+    const vozMatch = linha.match(/^(.+?):\s*(.+)$/);
+    if (musicaAtual && vozMatch) {
+      const [, nome, parte] = vozMatch;
+      // Verifica se "parte" é uma voz válida ou tem parênteses de obs
+      const parteMatch = parte.match(/^([^(]+?)(?:\s*\(([^)]+)\))?$/);
+      const parteVoz = parteMatch ? parteMatch[1].trim() : parte.trim();
+      const parteObs = parteMatch ? (parteMatch[2] || '') : '';
+      if (!musicaAtual.vozes) musicaAtual.vozes = {};
+      if (!musicaAtual.vozObs) musicaAtual.vozObs = {};
+      musicaAtual.vozes[nome.trim()] = parteVoz;
+      if (parteObs) musicaAtual.vozObs[nome.trim()] = parteObs;
+      novosVocalistas.add(nome.trim());
+      continue;
+    }
+
+    // Música — linha com nome e opcionalmente / modificadores
+    if (!musicaAtual) {
+      const partes = linha.split('/').map(p => p.trim());
+      const nome = partes[0];
+      let tom = 0;
+      for (let i = 1; i < partes.length; i++) {
+        const p = partes[i].toLowerCase();
+        if (p === 'sem kit') continue;
+        const tomMatch = p.match(/^([+-]?\d+)st$/);
+        if (tomMatch) tom = parseInt(tomMatch[1]);
+      }
+      musicaAtual = { id: `m${Date.now()}${Math.random()}`, nome, tom, vozes: {}, vozObs: {} };
+      novasMusicas.push(musicaAtual);
+    }
+  }
+
+  // Aplica os dados
+  if (novaData) document.getElementById('data-culto').value = novaData;
+  if (novoMinistro) document.getElementById('ministro').value = novoMinistro;
+  if (novaObs) document.getElementById('obs-geral').value = novaObs;
+
+  if (novosVocalistas.size > 0) vocalistas = [...novosVocalistas];
+  if (novasMusicas.length > 0) musicas = novasMusicas;
+
+  renderTags();
+  renderMusicas();
+  salvarDados();
+  fecharImportar();
+  showToast('Formação carregada!');
+}
 const dlVoc = document.createElement('datalist');
 dlVoc.id = 'vocalistas-list';
 ["Aline","Angela Melo","Ângela Aguiar","Beatriz","Brendon","Cristina","Gabriel","Geovana","Joab","Letícia","Merari","Nara","Pedro","Priscila"]
