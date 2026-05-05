@@ -268,6 +268,11 @@
     min-width: 160px;
   }
 
+  .tom-wrap.zero {
+    opacity: 0.3;
+    transition: opacity 0.2s ease;
+  }
+
   .tom-fader-row {
     display: flex;
     align-items: center;
@@ -969,7 +974,7 @@
     if (m) m.tom = n;
     const label = document.getElementById(`tom-val-${id}`);
     if (label) {
-      label.textContent = n === 0 ? '0' : (n > 0 ? `+${n}` : `${n}`);
+      label.textContent = n === 0 ? 'Tom original' : (n > 0 ? `+${n}` : `${n}`);
       label.className = `tom-value ${n === 0 ? 'zero' : ''}`;
     }
     salvarDados();
@@ -1041,6 +1046,8 @@
       if (tomN !== 0) {
         const tomStr = tomN > 0 ? `+${tomN}` : `${tomN}`;
         badges.push(`<span class="song-badge-tom">${tomStr} st</span>`);
+      } else if (tomN === 0 && m.tom !== undefined && m.tom !== '') {
+        badges.push(`<span class="song-badge-tom">Tom original</span>`);
       }
 
       const vozeLines = vocalistas.map(v => {
@@ -1087,7 +1094,11 @@
       const tomN = Number(m.tom);
       txt += `*${String(idx+1).padStart(2,'0')}. ${m.nome}*`;
       if (!temKit) txt += ` _(sem kit)_`;
-      if (tomN !== 0) txt += `\n⚠️ *${tomN > 0 ? '+' : ''}${tomN} semitons*`;
+      if (tomN !== 0) {
+        txt += `\n⚠️ *${tomN > 0 ? '+' : ''}${tomN} semitons*`;
+      } else if (tomN === 0 && m.tom !== undefined && m.tom !== '') {
+        txt += `\n_Tom original_`;
+      }
       txt += '\n';
       vocalistas.forEach(v => {
         const parte = m.vozes[v] || '';
