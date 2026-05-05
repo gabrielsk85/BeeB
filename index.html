@@ -142,7 +142,29 @@
   }
   input:focus, select:focus, textarea:focus { border-color: var(--green-mid); }
 
-  .input-group { margin-bottom: 10px; }
+  /* Esconde o ícone nativo do date picker */
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    opacity: 0;
+    position: absolute;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+  }
+  .date-wrap {
+    position: relative;
+  }
+  .date-wrap svg {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: var(--editor-label);
+  }
+  .date-wrap input[type="date"] {
+    padding-right: 36px;
+  }
   .input-group label {
     display: block;
     font-size: 11px;
@@ -230,7 +252,7 @@
     border-bottom: 1px solid rgba(255,255,255,0.2);
     border-radius: 0;
     color: var(--cream);
-    font-family: 'Playfair Display', serif;
+    font-family: 'DM Sans', sans-serif;
     font-size: 15px;
     font-weight: 600;
     padding: 2px 0;
@@ -377,7 +399,7 @@
 
   .card-meta-row { display: flex; gap: 16px; flex-wrap: wrap; }
   .card-meta-item { display: flex; flex-direction: column; gap: 2px; }
-  .card-meta-label { font-size: 8px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--green-muted); }
+  .card-meta-label { font-size: 8px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--editor-label); }
   .card-meta-value { font-size: 13px; font-weight: 500; color: var(--cream); }
 
   .card-divider { height: 3px; background: linear-gradient(90deg, var(--terracotta) 0%, var(--gold) 50%, var(--green-mid) 100%); }
@@ -436,7 +458,15 @@
     <div class="card-label">Culto</div>
     <div class="input-group">
       <label>Data</label>
-      <input type="date" id="data-culto">
+      <div class="date-wrap">
+        <input type="date" id="data-culto">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+      </div>
     </div>
     <div class="input-group">
       <label>Ministro de Louvor</label>
@@ -448,7 +478,7 @@
     <div class="card-label">Vocalistas Escalados</div>
     <div class="tags-wrap" id="tags-vocalistas"></div>
     <div class="add-row">
-      <input type="text" id="input-vocalista" placeholder="Nome do vocalista" maxlength="30">
+      <input type="text" id="input-vocalista" placeholder="Nome do vocalista" maxlength="30" list="vocalistas-list">
       <button class="btn-add" onclick="adicionarVocalista()">+ Add</button>
     </div>
   </div>
@@ -484,7 +514,15 @@
       <div class="card-ministry">Ministério<br><span>de Música</span></div>
       <div class="card-meta-row">
         <div class="card-meta-item">
-          <span class="card-meta-label">Data</span>
+          <span class="card-meta-label">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: inline; margin-right: 2px; vertical-align: -2px;">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+              <line x1="16" y1="2" x2="16" y2="6"></line>
+              <line x1="8" y1="2" x2="8" y2="6"></line>
+              <line x1="3" y1="10" x2="21" y2="10"></line>
+            </svg>
+            Data
+          </span>
           <span class="card-meta-value" id="prev-data">—</span>
         </div>
         <div class="card-meta-item">
@@ -940,6 +978,14 @@ function limparTudo() {
 }
 
 // ══ AUTOCOMPLETE ══
+// Vocalistas
+const dlVoc = document.createElement('datalist');
+dlVoc.id = 'vocalistas-list';
+["Aline","Cristina","Ângela Aguiar","Beatriz","Brendon","Geovana","Joab","Letícia","Merari","Nara","Pedro","Priscila","Angela Melo","Gabriel"]
+.forEach(n => { const o = document.createElement('option'); o.value = n; dlVoc.appendChild(o); });
+document.body.appendChild(dlVoc);
+
+// Músicas
 const dl = document.createElement('datalist');
 dl.id = 'repertorio-list';
 ["A Ele A Glória","Agradeço","Até o fim","Até outra vez","Ao único","Aclame ao Senhor","Amo o Senhor","Basta uma palavra","Bom Perfume","Da vida o melhor","Eu te vejo em Tudo","É o teu povo","Espírito Enche A Minha Vida","Graça","Grato Sou","Gratidão","Grande é o nosso Deus","Hosana","Jesus em Tua Presença","Jesus o Plano Perfeito","Louvemos Ao Senhor","Muitos Virão Te Louvar","Meu tributo","Nenhum Deus Como Tu","Nunca Me Deixou","Nenhuma condenação há","Novo dia","O amor de Deus (logo eu)","Poder Para Salvar","Quão Formoso És","Que Segurança","Quebrantado","Rei Meu","Reina","Seu Sangue","Sou feliz","Sublime","Toma o teu lugar","Tão Profundo","Teu Povo","Tremenda Graça","Tu És Deus - A Ele","Tudo é Perda","Vida Aos Sepulcros","Vou Te Alegrar","Vinho e Pão","Vencendo vem Jesus/Sê valente","Bondade De Deus","Deus Forte","Ele é Exaltado","Emaús","Eu Me Rendo","Filho do Deus Vivo","Getsêmani","Nada Além do Sangue","O Rei Está Voltando","Porque Ele Vive","Pra Sempre","Rei Do Meu Coração","Reina em Mim","Rendido Estou","Teu Amor Não Falha","Venha o Teu Reino","Vim Para Adorar-te","Até que Ele venha"]
