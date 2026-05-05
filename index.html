@@ -805,9 +805,51 @@
 
   const VOZES = ["Lead","Soprano","Contralto","Tenor","Abertura Livre","Base"];
 
+  // ── localStorage ──
+  const STORAGE_KEY = 'formacao-vocal-ibe-data';
+
+  function salvarDados() {
+    const data = {
+      data: document.getElementById('data-culto').value,
+      ministro: document.getElementById('ministro').value,
+      vocalistas,
+      musicas
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  }
+
+  function carregarDados() {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (!saved) return;
+    try {
+      const data = JSON.parse(saved);
+      document.getElementById('data-culto').value = data.data || '';
+      document.getElementById('ministro').value = data.ministro || '';
+      vocalistas = data.vocalistas || [];
+      musicas = data.musicas || [];
+      renderTags();
+      renderMusicas();
+    } catch (e) {
+      console.error('Erro ao carregar dados:', e);
+    }
+  }
+
+  // Carrega dados ao abrir a página
+  window.addEventListener('DOMContentLoaded', () => {
+    setTimeout(carregarDados, 100);
+  });
+
   // ── Vocalistas ──
   document.getElementById('input-vocalista').addEventListener('keydown', e => {
     if (e.key === 'Enter') adicionarVocalista();
+  });
+
+  document.getElementById('data-culto').addEventListener('change', () => {
+    salvarDados();
+  });
+
+  document.getElementById('ministro').addEventListener('input', () => {
+    salvarDados();
   });
 
   function adicionarVocalista() {
@@ -818,12 +860,14 @@
     input.value = '';
     renderTags();
     atualizarVozesNasMusicas();
+    salvarDados();
   }
 
   function removerVocalista(nome) {
     vocalistas = vocalistas.filter(v => v !== nome);
     renderTags();
     atualizarVozesNasMusicas();
+    salvarDados();
   }
 
   function renderTags() {
@@ -839,6 +883,7 @@
     const id = `musica-${Date.now()}`;
     musicas.push({ id, nome: '', tom: '', vozes: {} });
     renderMusicas();
+    salvarDados();
     setTimeout(() => {
       const el = document.getElementById(`nome-${id}`);
       if (el) el.focus();
@@ -848,6 +893,7 @@
   function removerMusica(id) {
     musicas = musicas.filter(m => m.id !== id);
     renderMusicas();
+    salvarDados();
   }
 
   function renderMusicas() {
@@ -907,13 +953,13 @@
     const m = musicas.find(x => x.id === id);
     if (m) {
       m.nome = val;
-      // atualiza badge kit sem re-render completo
       const badge = document.querySelector(`#card-${id} .badge-kit`);
       if (badge) {
         const t = temKitVocal(val);
         badge.className = `badge-kit ${t ? 'tem' : 'nao'}`;
         badge.textContent = t ? '✓ Kit Vocal' : '✗ Sem Kit';
       }
+      salvarDados();
     }
   }
 
@@ -926,16 +972,19 @@
       label.textContent = n === 0 ? '0' : (n > 0 ? `+${n}` : `${n}`);
       label.className = `tom-value ${n === 0 ? 'zero' : ''}`;
     }
+    salvarDados();
   }
 
   function setVoz(id, vocalista, voz) {
     const m = musicas.find(x => x.id === id);
     if (m) { if (!m.vozes) m.vozes = {}; m.vozes[vocalista] = voz; }
+    salvarDados();
   }
 
   function setVozObs(id, vocalista, obs) {
     const m = musicas.find(x => x.id === id);
     if (m) { if (!m.vozObs) m.vozObs = {}; m.vozObs[vocalista] = obs; }
+    salvarDados();
   }
 
   function atualizarVozesNasMusicas() {
