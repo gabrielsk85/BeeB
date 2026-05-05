@@ -314,9 +314,12 @@
     font-size: 12px;
     font-weight: 700;
     color: var(--terracotta);
-    min-width: 28px;
+    min-width: 90px;
+    width: 90px;
     text-align: center;
     font-family: 'DM Sans', sans-serif;
+    white-space: nowrap;
+    flex-shrink: 0;
   }
 
   .tom-value.zero { color: var(--green-muted); }
@@ -974,8 +977,16 @@
     if (m) m.tom = n;
     const label = document.getElementById(`tom-val-${id}`);
     if (label) {
-      label.textContent = n === 0 ? 'Tom original' : (n > 0 ? `+${n}` : `${n}`);
-      label.className = `tom-value ${n === 0 ? 'zero' : ''}`;
+      const newText = n === 0 ? 'Tom original' : (n > 0 ? `+${n}` : `${n}`);
+      const wasZero = label.className.includes('zero');
+      const isZero = n === 0;
+      
+      label.textContent = newText;
+      
+      // Só atualiza classe se realmente mudou de zero pra não-zero
+      if (wasZero !== isZero) {
+        label.className = `tom-value ${isZero ? 'zero' : ''}`;
+      }
     }
     salvarDados();
   }
