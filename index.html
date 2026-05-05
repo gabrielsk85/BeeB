@@ -1442,7 +1442,7 @@ function importarFormacao() {
         const tomMatch = p.match(/^([+-]?\d+)st$/);
         if (tomMatch) tom = parseInt(tomMatch[1]);
       }
-      musicaAtual = { id: `m${Date.now()}${Math.random()}`, nome, tom, vozes: {}, vozObs: {} };
+      musicaAtual = { id: `m${Date.now()}${Math.floor(Math.random()*9999)}`, nome, tom, vozes: {}, vozObs: {} };
       novasMusicas.push(musicaAtual);
     }
   }
