@@ -428,9 +428,27 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .tom-label { font-size: 8px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--txt-sub); text-align: right; opacity: 0.6; }
 
 .musica-vozes { padding: 10px 14px 12px; display: flex; flex-direction: column; gap: 6px; }
-.voz-row { display: grid; grid-template-columns: 96px 1fr; gap: 8px; align-items: center; }
+.voz-row { display: grid; grid-template-columns: 96px 1fr 24px; gap: 6px; align-items: center; }
 .voz-nome { font-size: 12px; font-weight: 600; color: var(--txt); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .voz-select { padding: 6px 12px; font-size: 12px; font-weight: 500; }
+.btn-obs-toggle {
+  background: none;
+  border: 1px solid var(--glass-border);
+  border-radius: 6px;
+  color: var(--txt-sub);
+  font-size: 14px;
+  line-height: 1;
+  width: 22px;
+  height: 22px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.2s, background 0.2s;
+  flex-shrink: 0;
+  padding: 0;
+}
+.btn-obs-toggle:hover { opacity: 1 !important; background: var(--glass-hover); }
 .voz-obs-input { margin-top: 2px; font-size: 11px !important; padding: 4px 10px !important; color: rgba(181,96,58,0.8) !important; }
 
 /* ══ BOTÕES ══ */
@@ -1069,12 +1087,16 @@ function renderMusicas() {
       const sel = m.vozes?.[v] || '';
       const obs = m.vozObs?.[v] || '';
       const opts = ['', ...VOZES].map(o => `<option value="${o}"${sel===o?' selected':''}>${o}</option>`).join('');
+      const safeV = v.replace(/'/g, "\\'").replace(/\s/g,'_');
+      const obsAberta = obs ? 'block' : 'none';
+      const btnOpacity = obs ? '1' : '0.3';
       return `
         <div class="voz-row">
           <div class="voz-nome">${v}</div>
           <select class="voz-select" onchange="setVoz('${m.id}','${v}',this.value)">${opts}</select>
+          <button class="btn-obs-toggle" onclick="toggleObs('${m.id}','${safeV}',this)" title="Adicionar observação" style="opacity:${btnOpacity};">+</button>
         </div>
-        <div style="padding-left:104px;margin-top:-2px;margin-bottom:4px;">
+        <div class="voz-obs-wrap" id="obs-wrap-${m.id}-${safeV}" style="display:${obsAberta};padding-left:104px;margin-top:-2px;margin-bottom:4px;">
           <input type="text" class="voz-obs-input" style="font-size:11px;padding:4px 10px;" placeholder="Observações" value="${obs}" oninput="setVozObs('${m.id}','${v}',this.value)">
         </div>`;
     }).join('');
@@ -1162,6 +1184,15 @@ function setTomFader(id, val) {
   if (label.textContent !== newText) label.textContent = newText;
   if (label.className !== newClass) label.className = newClass;
   salvarDados();
+}
+
+function toggleObs(musicaId, safeV, btn) {
+  const wrap = document.getElementById(`obs-wrap-${musicaId}-${safeV}`);
+  if (!wrap) return;
+  const aberta = wrap.style.display === 'block';
+  wrap.style.display = aberta ? 'none' : 'block';
+  btn.style.opacity = aberta ? '0.3' : '1';
+  if (!aberta) wrap.querySelector('input').focus();
 }
 
 function setVoz(id, vocalista, voz) {
