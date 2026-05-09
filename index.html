@@ -3,6 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Aplicativo para criar e gerenciar formações vocais do Ministério de Música da IBE">
+<meta name="theme-color" content="#3a4a2e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Formação Vocal">
+<meta name="apple-mobile-web-app-icon" content="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect fill='%233a4a2e' width='180' height='180' rx='39'/><text x='50%' y='50%' font-family='Playfair Display, serif' font-size='72' font-weight='700' fill='%23f5f0e8' text-anchor='middle' dominant-baseline='central'>F</text><text x='50%' y='125' font-family='DM Sans, sans-serif' font-size='20' font-weight='600' fill='%238a9872' text-anchor='middle'>M.M.</text></svg>">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect fill='%233a4a2e' width='64' height='64'/><text x='50%' y='50%' font-family='Playfair Display, serif' font-size='40' font-weight='700' fill='%23f5f0e8' text-anchor='middle' dominant-baseline='central'>F</text></svg>">
 <title>Formação Vocal — M.M. IBE</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -365,11 +373,17 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .btn-remove-musica:hover { opacity: 1; color: var(--terracotta); }
 
 .musica-meta {
-  padding: 10px 14px 0;
+  padding: 10px 14px 8px;
   display: flex;
-  gap: 8px;
+  gap: 10px;
   align-items: center;
-  flex-wrap: wrap;
+}
+.musica-meta-left {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  align-items: flex-start;
+  flex-shrink: 0;
 }
 
 .badge-kit {
@@ -386,6 +400,32 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 /* Fader */
 .tom-wrap { display: flex; flex-direction: column; gap: 3px; flex: 1; min-width: 160px; }
 .tom-fader-row { display: flex; align-items: center; gap: 8px; }
+.tom-original-wrap { display: flex; flex-direction: column; gap: 2px; flex-shrink: 0; }
+.tom-original-input {
+  width: 60px !important;
+  padding: 4px 8px !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  text-align: center;
+  color: var(--txt) !important;
+  letter-spacing: 0.5px;
+}
+.tom-transposto-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 8px;
+  background: rgba(181,96,58,0.08);
+  border: 1px solid rgba(181,96,58,0.15);
+  border-radius: 8px;
+}
+}
+.tom-transposto-val {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--terracotta);
+  letter-spacing: 0.5px;
+}
 .tom-fader {
   -webkit-appearance: none;
   appearance: none;
@@ -684,16 +724,18 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .song-badge-tom {
   font-size: 8px;
   font-weight: 700;
-  color: #fff;
-  background: var(--terracotta);
+  color: #b5603a;
+  background: rgba(181,96,58,0.12);
+  border: 1px solid rgba(181,96,58,0.25);
   padding: 2px 8px;
   border-radius: 10px;
 }
 .song-badge-original {
   font-size: 8px;
-  font-weight: 500;
-  color: rgba(138,152,114,0.7);
-  background: rgba(138,152,114,0.1);
+  font-weight: 700;
+  color: #c49a4a;
+  background: rgba(196,154,74,0.12);
+  border: 1px solid rgba(196,154,74,0.25);
   padding: 2px 8px;
   border-radius: 10px;
 }
@@ -1113,13 +1155,20 @@ function renderMusicas() {
         <button class="btn-remove-musica" onclick="removerMusica('${m.id}')">×</button>
       </div>
       <div class="musica-meta">
-        <span class="badge-kit ${temKit?'tem':'nao'}">${temKit?'✓ Kit':'✗ Sem Kit'}</span>
+        <div class="musica-meta-left">
+          <span class="badge-kit ${temKit?'tem':'nao'}">${temKit?'✓ Kit':'✗ Sem Kit'}</span>
+          <input type="text" class="tom-original-input" id="tom-orig-${m.id}" placeholder="Tom" value="${m.tomOriginal||''}" maxlength="5" oninput="setTomOriginal('${m.id}',this.value)">
+          <div class="tom-transposto-row" id="tom-trans-${m.id}" style="display:${(m.tomOriginal&&tomN!==0)?'flex':'none'};">
+            <span style="color:var(--txt-sub);font-size:10px;">→</span>
+            <span class="tom-transposto-val" id="tom-trans-val-${m.id}">${calcularTomTransposto(m.tomOriginal||'',tomN)}</span>
+          </div>
+        </div>
         <div class="tom-wrap">
           <div class="tom-fader-row">
-            <input type="range" class="tom-fader" min="-12" max="12" value="${tomN}" oninput="setTomFader('${m.id}',this.value)">
+            <input type="range" class="tom-fader" min="-12" max="12" value="${tomN}" oninput="setTomFader('${m.id}',this.value)" ondblclick="resetFader('${m.id}',this)">
             <span class="tom-value ${tomClass}" id="tom-val-${m.id}">${tomLabel}</span>
           </div>
-          <div class="tom-label">Semitons</div>
+          <div class="tom-label">Transposição</div>
         </div>
       </div>
       <div class="musica-vozes">${vozRows}</div>`;
@@ -1173,16 +1222,75 @@ function setNomeMusica(id, val) {
   salvarDados();
 }
 
+// ══ TRANSPOSIÇÃO ══
+// Escala cromática — usamos sustenidos por padrão, bemóis para contextos com bemol
+const CROMATICA = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+const BEMOIS    = ['C','Db','D','Eb','E','F','Gb','G','Ab','A','Bb','B'];
+
+function calcularTomTransposto(tomOriginal, semitons) {
+  if (!tomOriginal || semitons === 0) return '';
+  const s = tomOriginal.trim();
+
+  // Detecta raiz (1 ou 2 chars) e sufixo (m, maj, etc.)
+  const match = s.match(/^([A-G][#b]?)(m?)$/i);
+  if (!match) return '';
+
+  const raiz = match[1];
+  const sufixo = match[2] || ''; // 'm' ou ''
+
+  // Normaliza bemóis para sustenido equivalente para achar índice
+  const normalizado = raiz
+    .replace('Db','C#').replace('Eb','D#').replace('Fb','E')
+    .replace('Gb','F#').replace('Ab','G#').replace('Bb','A#').replace('Cb','B');
+
+  const idx = CROMATICA.indexOf(normalizado);
+  if (idx === -1) return '';
+
+  const novoIdx = ((idx + semitons) % 12 + 12) % 12;
+
+  // Usa bemóis se a raiz original tinha bemol
+  const escala = raiz.includes('b') ? BEMOIS : CROMATICA;
+  const novaRaiz = escala[novoIdx];
+
+  return novaRaiz + sufixo;
+}
+
+function atualizarTomTransposto(id) {
+  const m = musicas.find(x => x.id === id);
+  if (!m) return;
+  const tomN = Number(m.tom) || 0;
+  const orig = m.tomOriginal || '';
+  const trans = calcularTomTransposto(orig, tomN);
+  const row = document.getElementById(`tom-trans-${id}`);
+  const val = document.getElementById(`tom-trans-val-${id}`);
+  if (row) row.style.display = (orig && tomN !== 0 && trans) ? 'flex' : 'none';
+  if (val) val.textContent = trans;
+}
+
+function resetFader(id, faderEl) {
+  faderEl.value = 0;
+  setTomFader(id, 0);
+}
+
+function setTomOriginal(id, val) {
+  const m = musicas.find(x => x.id === id);
+  if (m) m.tomOriginal = val;
+  atualizarTomTransposto(id);
+  salvarDados();
+}
+
 function setTomFader(id, val) {
   const m = musicas.find(x => x.id === id);
   const n = Number(val);
   if (m) m.tom = n;
   const label = document.getElementById(`tom-val-${id}`);
-  if (!label) return;
-  const newText = n === 0 ? 'Tom original' : (n > 0 ? `+${n}` : `${n}`);
-  const newClass = `tom-value${n === 0 ? ' zero' : ''}`;
-  if (label.textContent !== newText) label.textContent = newText;
-  if (label.className !== newClass) label.className = newClass;
+  if (label) {
+    const newText = n === 0 ? 'Tom original' : (n > 0 ? `+${n}` : `${n}`);
+    const newClass = `tom-value${n === 0 ? ' zero' : ''}`;
+    if (label.textContent !== newText) label.textContent = newText;
+    if (label.className !== newClass) label.className = newClass;
+  }
+  atualizarTomTransposto(id);
   salvarDados();
 }
 
@@ -1256,8 +1364,19 @@ function gerarPreview() {
 
     const badges = [];
     if (!temKit) badges.push(`<span class="song-badge-nokit">sem kit</span>`);
-    if (tomN !== 0) badges.push(`<span class="song-badge-tom">${tomN > 0 ? '+' : ''}${tomN} st</span>`);
-    else badges.push(`<span class="song-badge-original">Tom original</span>`);
+    if (m.tomOriginal) {
+      const trans = calcularTomTransposto(m.tomOriginal, tomN);
+      if (tomN !== 0 && trans) {
+        badges.push(`<span class="song-badge-original">${m.tomOriginal} → ${trans}</span>`);
+        badges.push(`<span class="song-badge-tom">${tomN > 0 ? '+' : ''}${tomN}st</span>`);
+      } else {
+        badges.push(`<span class="song-badge-original">${m.tomOriginal}</span>`);
+      }
+    } else if (tomN !== 0) {
+      badges.push(`<span class="song-badge-tom">${tomN > 0 ? '+' : ''}${tomN}st</span>`);
+    } else {
+      badges.push(`<span class="song-badge-original">Tom original</span>`);
+    }
 
     const vozeLines = vocalistas.map(v => {
       const parte = m.vozes?.[v] || '';
@@ -1307,7 +1426,17 @@ function gerarTexto(data, ministro, obsGeral) {
     const tomN = Number(m.tom) || 0;
     let linha = m.nome;
     const extras = [];
-    if (tomN !== 0) extras.push(`${tomN > 0 ? '+' : ''}${tomN}st`);
+    if (m.tomOriginal) {
+      const trans = calcularTomTransposto(m.tomOriginal, tomN);
+      if (tomN !== 0 && trans) {
+        extras.push(`${m.tomOriginal}→${trans}`);
+        extras.push(`${tomN > 0 ? '+' : ''}${tomN}st`);
+      } else {
+        extras.push(m.tomOriginal);
+      }
+    } else if (tomN !== 0) {
+      extras.push(`${tomN > 0 ? '+' : ''}${tomN}st`);
+    }
     if (!temKit) extras.push('sem kit');
     if (extras.length) linha += ` / ${extras.join(' / ')}`;
     txt += linha + '\n';
@@ -1467,13 +1596,16 @@ function importarFormacao() {
       const partes = linha.split('/').map(p => p.trim());
       const nome = partes[0];
       let tom = 0;
+      let tomOriginal = '';
       for (let i = 1; i < partes.length; i++) {
-        const p = partes[i].toLowerCase();
-        if (p === 'sem kit') continue;
+        const p = partes[i].trim();
+        if (p.toLowerCase() === 'sem kit') continue;
         const tomMatch = p.match(/^([+-]?\d+)st$/);
-        if (tomMatch) tom = parseInt(tomMatch[1]);
+        if (tomMatch) { tom = parseInt(tomMatch[1]); continue; }
+        // Se bate com padrão de tom (ex: Am, G, F#m)
+        if (/^[A-G][#b]?m?$/.test(p)) { tomOriginal = p; continue; }
       }
-      musicaAtual = { id: `m${Date.now()}${Math.floor(Math.random()*9999)}`, nome, tom, vozes: {}, vozObs: {} };
+      musicaAtual = { id: `m${Date.now()}${Math.floor(Math.random()*9999)}`, nome, tom, tomOriginal, vozes: {}, vozObs: {} };
       novasMusicas.push(musicaAtual);
     }
   }
@@ -1505,6 +1637,11 @@ dl.id = 'repertorio-list';
 .sort((a,b) => a.localeCompare(b,'pt'))
 .forEach(n => { const o = document.createElement('option'); o.value = n; dl.appendChild(o); });
 document.body.appendChild(dl);
+
+// ══ SERVICE WORKER ══
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('data:application/javascript,self.addEventListener("install",e=>self.skipWaiting());self.addEventListener("activate",e=>e.waitUntil(clients.claim()));self.addEventListener("fetch",e=>{if(e.request.method!=="GET")return;e.respondWith(fetch(e.request).catch(()=>Response.error()))})').catch(e => console.log('SW failed:', e));
+}
 
 // ══ INIT ══
 window.addEventListener('DOMContentLoaded', () => {
