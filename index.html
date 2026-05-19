@@ -841,6 +841,84 @@ textarea#texto-copiavel {
 .toast.show { transform: translateX(-50%) translateY(0); }
 
 select option { color: #2a3520; background: #f5f0e8; }
+
+/* ══ KIT VOCAL PLAYER ══ */
+.kit-section {
+  border-top: 1px solid var(--sep);
+  padding: 10px 14px 12px;
+}
+.kit-section-header {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex-wrap: wrap;
+}
+.kit-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--txt-label);
+}
+.badge-outros-tons {
+  font-size: 8px;
+  font-weight: 600;
+  color: var(--gold);
+  background: rgba(196,154,74,0.1);
+  border: 1px solid rgba(196,154,74,0.2);
+  padding: 2px 7px;
+  border-radius: 10px;
+}
+.kit-naipe-btns {
+  display: flex;
+  gap: 5px;
+  margin-left: auto;
+}
+.btn-naipe {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  color: var(--txt);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: background 0.15s;
+  backdrop-filter: blur(8px);
+}
+.btn-naipe:hover { background: var(--glass-hover); }
+.kit-player-wrap {
+  margin-top: 8px;
+  background: rgba(0,0,0,0.2);
+  border: 1px solid var(--glass-border);
+  border-radius: 10px;
+  padding: 8px 10px;
+}
+.kit-player-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+.kit-player-naipe {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--txt-label);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.kit-player-close {
+  background: none;
+  border: none;
+  color: var(--txt-sub);
+  font-size: 16px;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+  opacity: 0.6;
+}
+.kit-player-close:hover { opacity: 1; }
 </style>
 </head>
 <body>
@@ -995,7 +1073,47 @@ select option { color: #2a3520; background: #f5f0e8; }
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
 // ══════════════════════════════════════════
-// REPERTÓRIO COM KIT VOCAL
+// KITS VOCAIS — Mapeamento Drive
+// Chave: nome da música em minúsculas (trim)
+// Valores: IDs dos arquivos no Google Drive
+// Para adicionar: kitVocal['nome da música'] = { soprano: 'ID', contralto: 'ID', tenor: 'ID', outrosTons: true }
+// ══════════════════════════════════════════
+const KITS_VOCAIS = {
+  'nada além do sangue': {
+    soprano:   '17pN_Y90z_A4YcwpnNsj6TMAvpEqIin8K',
+    contralto: '1NVCc0s0QoH7ZzQKfsfLRrQE42peGOCpm',
+    tenor:     '1np4TAQYh6YHs-mj8f4vM2rv8XaEunj4S',
+  },
+  'bondade de deus': {
+    soprano:   '1JcDkzdGi_4GETpiSngWAMrIxzXLtk4uG',
+    tenor:     '1eN5RfOfdqIF6sx8HTXZrfp5eSXJzwlO3',
+  },
+  'rei do meu coração': {
+    soprano:   '1EFCyrloundkNHrvZerRORdhdY3mwyKM7',
+    contralto: '1-S_sUrIWHI6XBd4NmS60atH0h7SptMh4',
+    tenor:     '16nTPgJolh1Xq3GuA9-7X5ow--aODrYk3',
+  },
+  'agradeço': {
+    tenor:     '1o3-Qfkh6WTBZrwzCVAO-LJd31FG5wiz7',
+  },
+  'pra sempre': {
+    tenor:     '1-7JDRhFOPx5OdZRjbXcfa7V6EjNKvkfq',
+  },
+  'poder para salvar': {
+    tenor:     '17-uTHdMzF91_QdyJ4QkLWDpvHi3crRT6',
+  },
+  'rei meu': {
+    tenor:     '1iBAs3HXkuWmkTpBAWdkhhDA0FNWRnZro',
+  },
+  'seu sangue': {
+    tenor:     '1K7WcmaXTAxMIiX5tlOaN2gf_Xdg_wi4J',
+  },
+  'vim para adorar-te': {
+    tenor:     '1IzquiMqn-78OO7qo4Ed4uFVrdbc9uk3Z',
+  },
+};
+
+
 // Para atualizar: adicione o nome em minúsculas
 // ══════════════════════════════════════════
 const repertorioComKit = new Set([
@@ -1171,7 +1289,8 @@ function renderMusicas() {
           <div class="tom-label">Transposição</div>
         </div>
       </div>
-      <div class="musica-vozes">${vozRows}</div>`;
+      <div class="musica-vozes">${vozRows}</div>
+      ${renderKitSection(m.nome, m.id)}`;
 
     // Drag — só pelo handle
     div.draggable = false;
@@ -1218,6 +1337,16 @@ function setNomeMusica(id, val) {
     const t = temKitVocal(val);
     badge.className = `badge-kit ${t?'tem':'nao'}`;
     badge.textContent = t ? '✓ Kit' : '✗ Sem Kit';
+  }
+  // Atualiza seção de kit vocal
+  const kitSection = document.getElementById(`kit-section-${id}`);
+  const kitHTML = renderKitSection(val, id);
+  if (kitSection) {
+    if (kitHTML) kitSection.outerHTML = kitHTML;
+    else kitSection.outerHTML = `<div class="kit-section" id="kit-section-${id}" style="display:none;"></div>`;
+  } else {
+    const vozesEl = document.querySelector(`#card-${id} .musica-vozes`);
+    if (vozesEl && kitHTML) vozesEl.insertAdjacentHTML('afterend', kitHTML);
   }
   salvarDados();
 }
@@ -1292,6 +1421,53 @@ function setTomFader(id, val) {
   }
   atualizarTomTransposto(id);
   salvarDados();
+}
+
+function renderKitSection(nomeMus, musicaId) {
+  const kit = KITS_VOCAIS[(nomeMus || '').toLowerCase().trim()];
+  if (!kit) return '';
+  const naipes = ['soprano','contralto','tenor'].filter(n => kit[n]);
+  if (!naipes.length) return '';
+  const labels = { soprano: 'Soprano', contralto: 'Contralto', tenor: 'Tenor' };
+  const btns = naipes.map(n =>
+    `<button class="btn-naipe" onclick="abrirKitPlayer('${musicaId}','${n}','${kit[n]}')">${labels[n]}</button>`
+  ).join('');
+  const outrosTonsHTML = kit.outrosTons
+    ? `<span class="badge-outros-tons">+ outro(s) tom(s)</span>` : '';
+  return `
+    <div class="kit-section" id="kit-section-${musicaId}">
+      <div class="kit-section-header">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--txt-label);flex-shrink:0;"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+        <span class="kit-label">Kit Vocal</span>
+        ${outrosTonsHTML}
+        <div class="kit-naipe-btns">${btns}</div>
+      </div>
+      <div class="kit-player-wrap" id="kit-player-${musicaId}" style="display:none;">
+        <div class="kit-player-header">
+          <span class="kit-player-naipe" id="kit-player-naipe-${musicaId}"></span>
+          <button class="kit-player-close" onclick="fecharKitPlayer('${musicaId}')">×</button>
+        </div>
+        <iframe id="kit-iframe-${musicaId}" src="" allow="autoplay" style="width:100%;height:56px;border:none;border-radius:8px;"></iframe>
+      </div>
+    </div>`;
+}
+
+function abrirKitPlayer(musicaId, naipe, fileId) {
+  const wrap = document.getElementById(`kit-player-${musicaId}`);
+  const iframe = document.getElementById(`kit-iframe-${musicaId}`);
+  const naipeEl = document.getElementById(`kit-player-naipe-${musicaId}`);
+  if (!wrap || !iframe) return;
+  const labels = { soprano: 'Soprano', contralto: 'Contralto', tenor: 'Tenor' };
+  naipeEl.textContent = labels[naipe] || naipe;
+  iframe.src = `https://drive.google.com/file/d/${fileId}/preview`;
+  wrap.style.display = 'block';
+}
+
+function fecharKitPlayer(musicaId) {
+  const wrap = document.getElementById(`kit-player-${musicaId}`);
+  const iframe = document.getElementById(`kit-iframe-${musicaId}`);
+  if (wrap) wrap.style.display = 'none';
+  if (iframe) iframe.src = '';
 }
 
 function toggleObs(musicaId, safeV, btn) {
@@ -1637,11 +1813,6 @@ dl.id = 'repertorio-list';
 .sort((a,b) => a.localeCompare(b,'pt'))
 .forEach(n => { const o = document.createElement('option'); o.value = n; dl.appendChild(o); });
 document.body.appendChild(dl);
-
-// ══ SERVICE WORKER ══
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('data:application/javascript,self.addEventListener("install",e=>self.skipWaiting());self.addEventListener("activate",e=>e.waitUntil(clients.claim()));self.addEventListener("fetch",e=>{if(e.request.method!=="GET")return;e.respondWith(fetch(e.request).catch(()=>Response.error()))})').catch(e => console.log('SW failed:', e));
-}
 
 // ══ INIT ══
 window.addEventListener('DOMContentLoaded', () => {
